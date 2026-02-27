@@ -1,0 +1,4 @@
+[ 18%] Built target pick_place_demo_parameters
+[ 36%] Built target collectEnvDemo_parameters
+[35m[1mConsolidate compiler generated dependencies of target mtc_dynamic_pick_place_task[0m
+[ 45%] [32mBuilding CXX object CMakeFiles/mtc_dynamic_pick_place_task.dir/src/pick_place_task.cpp.o[0m

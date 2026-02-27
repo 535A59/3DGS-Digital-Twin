@@ -1,0 +1,51 @@
+[0.008s] Invoking command in '/home/ziyang/work_space/mtc_controller_final/build/mtc_dynamic': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --build /home/ziyang/work_space/mtc_controller_final/build/mtc_dynamic -- -j32 -l32
+[0.037s] [ 18%] Built target pick_place_demo_parameters
+[0.040s] [ 36%] Built target collectEnvDemo_parameters
+[0.050s] [35m[1mConsolidate compiler generated dependencies of target mtc_dynamic_pick_place_task[0m
+[0.069s] [ 45%] [32mBuilding CXX object CMakeFiles/mtc_dynamic_pick_place_task.dir/src/pick_place_task.cpp.o[0m
+[13.426s] [ 54%] [32m[1mLinking CXX shared library libmtc_dynamic_pick_place_task.so[0m
+[13.633s] [ 63%] Built target mtc_dynamic_pick_place_task
+[13.652s] [ 72%] [32m[1mLinking CXX executable collectEnvDemo[0m
+[13.654s] [ 81%] [32m[1mLinking CXX executable pick_place_demo[0m
+[13.825s] [ 90%] Built target mtc_dynamic_pick_place_demo
+[13.849s] [100%] Built target mtc_dynamic_collectEnvDemo
+[13.857s] Invoked command in '/home/ziyang/work_space/mtc_controller_final/build/mtc_dynamic' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --build /home/ziyang/work_space/mtc_controller_final/build/mtc_dynamic -- -j32 -l32
+[13.863s] Invoking command in '/home/ziyang/work_space/mtc_controller_final/build/mtc_dynamic': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --install /home/ziyang/work_space/mtc_controller_final/build/mtc_dynamic
+[13.867s] -- Install configuration: "Release"
+[13.867s] -- Installing: /home/ziyang/work_space/mtc_controller_final/install/lib/libmtc_dynamic_pick_place_task.so
+[13.868s] -- Set runtime path of "/home/ziyang/work_space/mtc_controller_final/install/lib/libmtc_dynamic_pick_place_task.so" to ""
+[13.868s] -- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/include/mtc_dynamic
+[13.868s] -- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/include/mtc_dynamic/collectEnvDemo_parameters.hpp
+[13.868s] -- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/include/mtc_dynamic/pick_place_demo_parameters.hpp
+[13.868s] -- Installing: /home/ziyang/work_space/mtc_controller_final/install/lib/mtc_dynamic/pick_place_demo
+[13.868s] -- Set runtime path of "/home/ziyang/work_space/mtc_controller_final/install/lib/mtc_dynamic/pick_place_demo" to ""
+[13.868s] -- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/include/mtc_dynamic
+[13.868s] -- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/include/mtc_dynamic/collectEnvDemo_parameters.hpp
+[13.868s] -- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/include/mtc_dynamic/pick_place_demo_parameters.hpp
+[13.868s] -- Installing: /home/ziyang/work_space/mtc_controller_final/install/lib/mtc_dynamic/collectEnvDemo
+[13.869s] -- Set runtime path of "/home/ziyang/work_space/mtc_controller_final/install/lib/mtc_dynamic/collectEnvDemo" to ""
+[13.869s] -- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/launch
+[13.869s] -- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/launch/real_robot_moveit.launch.py
+[13.869s] -- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/launch/demo.launch.py
+[13.869s] -- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/launch/run.launch.py
+[13.869s] -- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/config
+[13.869s] -- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/config/mtc.rviz
+[13.869s] -- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/config/octomap.yaml
+[13.869s] -- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/config/panda_config.yaml
+[13.869s] -- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/config/gripper_moveit_controllers.yaml
+[13.869s] -- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/share/ament_index/resource_index/package_run_dependencies/mtc_dynamic
+[13.869s] -- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/share/ament_index/resource_index/parent_prefix_path/mtc_dynamic
+[13.869s] -- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/environment/ament_prefix_path.sh
+[13.869s] -- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/environment/ament_prefix_path.dsv
+[13.869s] -- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/environment/path.sh
+[13.869s] -- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/environment/path.dsv
+[13.869s] -- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/local_setup.bash
+[13.869s] -- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/local_setup.sh
+[13.869s] -- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/local_setup.zsh
+[13.869s] -- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/local_setup.dsv
+[13.869s] -- Installing: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/package.dsv
+[13.869s] -- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/share/ament_index/resource_index/packages/mtc_dynamic
+[13.869s] -- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/cmake/mtc_dynamicConfig.cmake
+[13.869s] -- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/cmake/mtc_dynamicConfig-version.cmake
+[13.869s] -- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/package.xml
+[13.870s] Invoked command in '/home/ziyang/work_space/mtc_controller_final/build/mtc_dynamic' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --install /home/ziyang/work_space/mtc_controller_final/build/mtc_dynamic

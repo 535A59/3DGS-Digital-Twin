@@ -1,0 +1,51 @@
+[ 18%] Built target pick_place_demo_parameters
+[ 36%] Built target collectEnvDemo_parameters
+[35m[1mConsolidate compiler generated dependencies of target mtc_dynamic_pick_place_task[0m
+[ 45%] [32mBuilding CXX object CMakeFiles/mtc_dynamic_pick_place_task.dir/src/pick_place_task.cpp.o[0m
+[01m[K/home/ziyang/work_space/mtc_controller_final/src/src/pick_place_task.cpp:[m[K In member function ‘[01m[Kbool mtc_dynamic::PickPlaceTask::init(const SharedPtr&, const pick_place_task_demo::Params&)[m[K’:
+[01m[K/home/ziyang/work_space/mtc_controller_final/src/src/pick_place_task.cpp:448:12:[m[K [01;35m[Kwarning: [m[Kvariable ‘[01m[Ksecond_pick_ptr[m[K’ set but not used [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wunused-but-set-variable-Wunused-but-set-variable]8;;[m[K]
+  448 |     Stage* [01;35m[Ksecond_pick_ptr[m[K = nullptr;
+      |            [01;35m[K^~~~~~~~~~~~~~~[m[K
+[ 54%] [32m[1mLinking CXX shared library libmtc_dynamic_pick_place_task.so[0m
+[ 63%] Built target mtc_dynamic_pick_place_task
+[ 81%] [32m[1mLinking CXX executable collectEnvDemo[0m
+[ 81%] [32m[1mLinking CXX executable pick_place_demo[0m
+[ 90%] Built target mtc_dynamic_pick_place_demo
+[100%] Built target mtc_dynamic_collectEnvDemo
+-- Install configuration: "Release"
+-- Installing: /home/ziyang/work_space/mtc_controller_final/install/lib/libmtc_dynamic_pick_place_task.so
+-- Set runtime path of "/home/ziyang/work_space/mtc_controller_final/install/lib/libmtc_dynamic_pick_place_task.so" to ""
+-- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/include/mtc_dynamic
+-- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/include/mtc_dynamic/collectEnvDemo_parameters.hpp
+-- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/include/mtc_dynamic/pick_place_demo_parameters.hpp
+-- Installing: /home/ziyang/work_space/mtc_controller_final/install/lib/mtc_dynamic/pick_place_demo
+-- Set runtime path of "/home/ziyang/work_space/mtc_controller_final/install/lib/mtc_dynamic/pick_place_demo" to ""
+-- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/include/mtc_dynamic
+-- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/include/mtc_dynamic/collectEnvDemo_parameters.hpp
+-- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/include/mtc_dynamic/pick_place_demo_parameters.hpp
+-- Installing: /home/ziyang/work_space/mtc_controller_final/install/lib/mtc_dynamic/collectEnvDemo
+-- Set runtime path of "/home/ziyang/work_space/mtc_controller_final/install/lib/mtc_dynamic/collectEnvDemo" to ""
+-- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/launch
+-- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/launch/real_robot_moveit.launch.py
+-- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/launch/demo.launch.py
+-- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/launch/run.launch.py
+-- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/config
+-- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/config/mtc.rviz
+-- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/config/octomap.yaml
+-- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/config/panda_config.yaml
+-- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/config/gripper_moveit_controllers.yaml
+-- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/share/ament_index/resource_index/package_run_dependencies/mtc_dynamic
+-- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/share/ament_index/resource_index/parent_prefix_path/mtc_dynamic
+-- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/environment/ament_prefix_path.sh
+-- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/environment/ament_prefix_path.dsv
+-- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/environment/path.sh
+-- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/environment/path.dsv
+-- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/local_setup.bash
+-- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/local_setup.sh
+-- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/local_setup.zsh
+-- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/local_setup.dsv
+-- Installing: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/package.dsv
+-- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/share/ament_index/resource_index/packages/mtc_dynamic
+-- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/cmake/mtc_dynamicConfig.cmake
+-- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/cmake/mtc_dynamicConfig-version.cmake
+-- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/package.xml

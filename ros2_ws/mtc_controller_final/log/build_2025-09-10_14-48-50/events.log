@@ -1,0 +1,200 @@
+[0.000000] (-) TimerEvent: {}
+[0.000392] (mtc_dynamic) JobQueued: {'identifier': 'mtc_dynamic', 'dependencies': OrderedDict()}
+[0.000420] (mtc_dynamic) JobStarted: {'identifier': 'mtc_dynamic'}
+[0.004831] (mtc_dynamic) JobProgress: {'identifier': 'mtc_dynamic', 'progress': 'cmake'}
+[0.005360] (mtc_dynamic) JobProgress: {'identifier': 'mtc_dynamic', 'progress': 'build'}
+[0.006996] (mtc_dynamic) Command: {'cmd': ['/usr/bin/cmake', '--build', '/home/ziyang/work_space/mtc_controller_final/build/mtc_dynamic', '--', '-j32', '-l32'], 'cwd': '/home/ziyang/work_space/mtc_controller_final/build/mtc_dynamic', 'env': OrderedDict([('LESSOPEN', '| /usr/bin/lesspipe %s'), ('LANGUAGE', 'en_GB:en'), ('USER', 'ziyang'), ('SSH_CLIENT', '10.147.18.155 57948 22'), ('LC_TIME', 'en_GB.UTF-8'), ('XDG_SESSION_TYPE', 'tty'), ('SHLVL', '1'), ('LD_LIBRARY_PATH', '/home/ziyang/work_space/mtc_controller_final/install/lib:/home/ziyang/ws_moveit2/install/lib:/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib:/usr/lib/x86_64-linux-gnu:/usr/local/lib:/home/ziyang/cuda/lib64:'), ('MOTD_SHOWN', 'pam'), ('HOME', '/home/ziyang'), ('CONDA_SHLVL', '0'), ('OLDPWD', '/home/ziyang'), ('SSH_TTY', '/dev/pts/46'), ('ROS_PYTHON_VERSION', '3'), ('LC_MONETARY', 'en_GB.UTF-8'), ('DBUS_SESSION_BUS_ADDRESS', 'unix:path=/run/user/1004/bus'), ('_CE_M', ''), ('COLCON_PREFIX_PATH', '/home/ziyang/work_space/mtc_controller_final/install:/home/ziyang/ws_moveit2/install'), ('ROS_DISTRO', 'humble'), ('LOGNAME', 'ziyang'), ('_', '/usr/bin/colcon'), ('ROS_VERSION', '2'), ('XDG_SESSION_CLASS', 'user'), ('TERM', 'xterm-256color'), ('XDG_SESSION_ID', '226'), ('DOTNET_ROOT', '/home/ziyang/dotnet'), ('_CE_CONDA', ''), ('ROS_LOCALHOST_ONLY', '0'), ('PATH', '/home/ziyang/ws_moveit2/install/bin:/opt/ros/humble/bin:/home/ziyang/dotnet:/home/ziyang/.cargo/bin:/home/ziyang/work_space/abseil-cpp/package/bin:/home/ziyang/cuda/bin:/home/ziyang/miniconda3/condabin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/ziyang/.dotnet/tools'), ('DOTNET_MULTILEVEL_LOOKUP', '0'), ('LC_ADDRESS', 'en_GB.UTF-8'), ('XDG_RUNTIME_DIR', '/run/user/1004'), ('LANG', 'en_GB.UTF-8'), ('LC_TELEPHONE', 'en_GB.UTF-8'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('AMENT_PREFIX_PATH', '/home/ziyang/work_space/mtc_controller_final/install:/home/ziyang/ws_moveit2/install:/opt/ros/humble'), ('CONDA_PYTHON_EXE', '/home/ziyang/miniconda3/bin/python'), ('SHELL', '/bin/bash'), ('LC_NAME', 'en_GB.UTF-8'), ('LESSCLOSE', '/usr/bin/lesspipe %s %s'), ('CMAKE_MODULE_PATH', '/home/ziyang/ws_moveit2/install/share/moveit_task_constructor_core/cmake'), ('LC_MEASUREMENT', 'en_GB.UTF-8'), ('LC_IDENTIFICATION', 'en_GB.UTF-8'), ('PWD', '/home/ziyang/work_space/mtc_controller_final/build/mtc_dynamic'), ('LC_ALL', 'en_US.UTF-8'), ('CUDA_HOME', '/home/ziyang/cuda'), ('CONDA_EXE', '/home/ziyang/miniconda3/bin/conda'), ('SSH_CONNECTION', '10.147.18.155 57948 10.147.18.51 22'), ('XDG_DATA_DIRS', '/usr/share/gnome:/usr/local/share:/usr/share:/var/lib/snapd/desktop'), ('PYTHONPATH', '/home/ziyang/ws_moveit2/install/local/lib/python3.10/dist-packages:/home/ziyang/ws_moveit2/install/lib/python3.10/site-packages:/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages'), ('LC_NUMERIC', 'en_GB.UTF-8'), ('LC_PAPER', 'en_GB.UTF-8'), ('COLCON', '1'), ('CMAKE_PREFIX_PATH', '/home/ziyang/work_space/mtc_controller_final/install:/home/ziyang/ws_moveit2/install:/opt/ros/humble')]), 'shell': False}
+[0.036923] (mtc_dynamic) StdoutLine: {'line': b'[ 18%] Built target pick_place_demo_parameters\n'}
+[0.037916] (mtc_dynamic) StdoutLine: {'line': b'[ 36%] Built target collectEnvDemo_parameters\n'}
+[0.048981] (mtc_dynamic) StdoutLine: {'line': b'\x1b[35m\x1b[1mConsolidate compiler generated dependencies of target mtc_dynamic_pick_place_task\x1b[0m\n'}
+[0.070059] (mtc_dynamic) StdoutLine: {'line': b'[ 45%] \x1b[32mBuilding CXX object CMakeFiles/mtc_dynamic_pick_place_task.dir/src/pick_place_task.cpp.o\x1b[0m\n'}
+[0.099822] (-) TimerEvent: {}
+[0.200084] (-) TimerEvent: {}
+[0.300360] (-) TimerEvent: {}
+[0.400705] (-) TimerEvent: {}
+[0.500953] (-) TimerEvent: {}
+[0.601188] (-) TimerEvent: {}
+[0.701392] (-) TimerEvent: {}
+[0.801603] (-) TimerEvent: {}
+[0.901809] (-) TimerEvent: {}
+[1.002027] (-) TimerEvent: {}
+[1.102238] (-) TimerEvent: {}
+[1.202450] (-) TimerEvent: {}
+[1.302661] (-) TimerEvent: {}
+[1.402864] (-) TimerEvent: {}
+[1.503066] (-) TimerEvent: {}
+[1.603281] (-) TimerEvent: {}
+[1.703575] (-) TimerEvent: {}
+[1.803884] (-) TimerEvent: {}
+[1.904157] (-) TimerEvent: {}
+[2.004442] (-) TimerEvent: {}
+[2.104702] (-) TimerEvent: {}
+[2.204964] (-) TimerEvent: {}
+[2.305233] (-) TimerEvent: {}
+[2.405498] (-) TimerEvent: {}
+[2.505763] (-) TimerEvent: {}
+[2.606066] (-) TimerEvent: {}
+[2.706331] (-) TimerEvent: {}
+[2.806537] (-) TimerEvent: {}
+[2.906826] (-) TimerEvent: {}
+[3.007073] (-) TimerEvent: {}
+[3.107274] (-) TimerEvent: {}
+[3.207481] (-) TimerEvent: {}
+[3.307691] (-) TimerEvent: {}
+[3.407910] (-) TimerEvent: {}
+[3.508134] (-) TimerEvent: {}
+[3.608381] (-) TimerEvent: {}
+[3.708658] (-) TimerEvent: {}
+[3.808861] (-) TimerEvent: {}
+[3.909081] (-) TimerEvent: {}
+[4.009319] (-) TimerEvent: {}
+[4.109522] (-) TimerEvent: {}
+[4.209725] (-) TimerEvent: {}
+[4.309937] (-) TimerEvent: {}
+[4.410157] (-) TimerEvent: {}
+[4.510403] (-) TimerEvent: {}
+[4.610604] (-) TimerEvent: {}
+[4.710812] (-) TimerEvent: {}
+[4.811065] (-) TimerEvent: {}
+[4.911306] (-) TimerEvent: {}
+[5.011516] (-) TimerEvent: {}
+[5.111739] (-) TimerEvent: {}
+[5.212042] (-) TimerEvent: {}
+[5.312269] (-) TimerEvent: {}
+[5.412468] (-) TimerEvent: {}
+[5.512676] (-) TimerEvent: {}
+[5.612895] (-) TimerEvent: {}
+[5.713149] (-) TimerEvent: {}
+[5.813395] (-) TimerEvent: {}
+[5.913656] (-) TimerEvent: {}
+[6.013871] (-) TimerEvent: {}
+[6.114104] (-) TimerEvent: {}
+[6.214317] (-) TimerEvent: {}
+[6.314536] (-) TimerEvent: {}
+[6.414786] (-) TimerEvent: {}
+[6.515036] (-) TimerEvent: {}
+[6.615258] (-) TimerEvent: {}
+[6.715471] (-) TimerEvent: {}
+[6.815682] (-) TimerEvent: {}
+[6.915894] (-) TimerEvent: {}
+[7.016098] (-) TimerEvent: {}
+[7.116276] (-) TimerEvent: {}
+[7.216518] (-) TimerEvent: {}
+[7.316748] (-) TimerEvent: {}
+[7.416968] (-) TimerEvent: {}
+[7.517189] (-) TimerEvent: {}
+[7.617557] (-) TimerEvent: {}
+[7.717831] (-) TimerEvent: {}
+[7.818217] (-) TimerEvent: {}
+[7.918505] (-) TimerEvent: {}
+[8.018822] (-) TimerEvent: {}
+[8.119091] (-) TimerEvent: {}
+[8.219357] (-) TimerEvent: {}
+[8.319616] (-) TimerEvent: {}
+[8.419878] (-) TimerEvent: {}
+[8.520142] (-) TimerEvent: {}
+[8.620402] (-) TimerEvent: {}
+[8.720695] (-) TimerEvent: {}
+[8.820954] (-) TimerEvent: {}
+[8.921243] (-) TimerEvent: {}
+[9.021450] (-) TimerEvent: {}
+[9.121672] (-) TimerEvent: {}
+[9.221879] (-) TimerEvent: {}
+[9.322114] (-) TimerEvent: {}
+[9.422388] (-) TimerEvent: {}
+[9.522630] (-) TimerEvent: {}
+[9.622893] (-) TimerEvent: {}
+[9.723099] (-) TimerEvent: {}
+[9.823330] (-) TimerEvent: {}
+[9.923552] (-) TimerEvent: {}
+[10.023758] (-) TimerEvent: {}
+[10.123961] (-) TimerEvent: {}
+[10.224163] (-) TimerEvent: {}
+[10.324391] (-) TimerEvent: {}
+[10.424611] (-) TimerEvent: {}
+[10.524848] (-) TimerEvent: {}
+[10.625053] (-) TimerEvent: {}
+[10.725266] (-) TimerEvent: {}
+[10.825474] (-) TimerEvent: {}
+[10.925684] (-) TimerEvent: {}
+[11.025898] (-) TimerEvent: {}
+[11.126190] (-) TimerEvent: {}
+[11.226467] (-) TimerEvent: {}
+[11.326731] (-) TimerEvent: {}
+[11.426996] (-) TimerEvent: {}
+[11.527260] (-) TimerEvent: {}
+[11.627520] (-) TimerEvent: {}
+[11.727780] (-) TimerEvent: {}
+[11.828067] (-) TimerEvent: {}
+[11.928355] (-) TimerEvent: {}
+[12.028622] (-) TimerEvent: {}
+[12.128888] (-) TimerEvent: {}
+[12.229168] (-) TimerEvent: {}
+[12.329441] (-) TimerEvent: {}
+[12.429710] (-) TimerEvent: {}
+[12.529970] (-) TimerEvent: {}
+[12.630235] (-) TimerEvent: {}
+[12.730499] (-) TimerEvent: {}
+[12.830768] (-) TimerEvent: {}
+[12.931032] (-) TimerEvent: {}
+[13.031280] (-) TimerEvent: {}
+[13.131562] (-) TimerEvent: {}
+[13.231816] (-) TimerEvent: {}
+[13.332064] (-) TimerEvent: {}
+[13.432282] (-) TimerEvent: {}
+[13.532543] (-) TimerEvent: {}
+[13.632785] (-) TimerEvent: {}
+[13.719301] (mtc_dynamic) StdoutLine: {'line': b'[ 54%] \x1b[32m\x1b[1mLinking CXX shared library libmtc_dynamic_pick_place_task.so\x1b[0m\n'}
+[13.732886] (-) TimerEvent: {}
+[13.833132] (-) TimerEvent: {}
+[13.921425] (mtc_dynamic) StdoutLine: {'line': b'[ 63%] Built target mtc_dynamic_pick_place_task\n'}
+[13.933210] (-) TimerEvent: {}
+[13.943418] (mtc_dynamic) StdoutLine: {'line': b'[ 72%] \x1b[32m\x1b[1mLinking CXX executable pick_place_demo\x1b[0m\n'}
+[13.944240] (mtc_dynamic) StdoutLine: {'line': b'[ 81%] \x1b[32m\x1b[1mLinking CXX executable collectEnvDemo\x1b[0m\n'}
+[14.033264] (-) TimerEvent: {}
+[14.115364] (mtc_dynamic) StdoutLine: {'line': b'[ 90%] Built target mtc_dynamic_pick_place_demo\n'}
+[14.133341] (-) TimerEvent: {}
+[14.133766] (mtc_dynamic) StdoutLine: {'line': b'[100%] Built target mtc_dynamic_collectEnvDemo\n'}
+[14.140157] (mtc_dynamic) CommandEnded: {'returncode': 0}
+[14.140572] (mtc_dynamic) JobProgress: {'identifier': 'mtc_dynamic', 'progress': 'install'}
+[14.146634] (mtc_dynamic) Command: {'cmd': ['/usr/bin/cmake', '--install', '/home/ziyang/work_space/mtc_controller_final/build/mtc_dynamic'], 'cwd': '/home/ziyang/work_space/mtc_controller_final/build/mtc_dynamic', 'env': OrderedDict([('LESSOPEN', '| /usr/bin/lesspipe %s'), ('LANGUAGE', 'en_GB:en'), ('USER', 'ziyang'), ('SSH_CLIENT', '10.147.18.155 57948 22'), ('LC_TIME', 'en_GB.UTF-8'), ('XDG_SESSION_TYPE', 'tty'), ('SHLVL', '1'), ('LD_LIBRARY_PATH', '/home/ziyang/work_space/mtc_controller_final/install/lib:/home/ziyang/ws_moveit2/install/lib:/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib:/usr/lib/x86_64-linux-gnu:/usr/local/lib:/home/ziyang/cuda/lib64:'), ('MOTD_SHOWN', 'pam'), ('HOME', '/home/ziyang'), ('CONDA_SHLVL', '0'), ('OLDPWD', '/home/ziyang'), ('SSH_TTY', '/dev/pts/46'), ('ROS_PYTHON_VERSION', '3'), ('LC_MONETARY', 'en_GB.UTF-8'), ('DBUS_SESSION_BUS_ADDRESS', 'unix:path=/run/user/1004/bus'), ('_CE_M', ''), ('COLCON_PREFIX_PATH', '/home/ziyang/work_space/mtc_controller_final/install:/home/ziyang/ws_moveit2/install'), ('ROS_DISTRO', 'humble'), ('LOGNAME', 'ziyang'), ('_', '/usr/bin/colcon'), ('ROS_VERSION', '2'), ('XDG_SESSION_CLASS', 'user'), ('TERM', 'xterm-256color'), ('XDG_SESSION_ID', '226'), ('DOTNET_ROOT', '/home/ziyang/dotnet'), ('_CE_CONDA', ''), ('ROS_LOCALHOST_ONLY', '0'), ('PATH', '/home/ziyang/ws_moveit2/install/bin:/opt/ros/humble/bin:/home/ziyang/dotnet:/home/ziyang/.cargo/bin:/home/ziyang/work_space/abseil-cpp/package/bin:/home/ziyang/cuda/bin:/home/ziyang/miniconda3/condabin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/ziyang/.dotnet/tools'), ('DOTNET_MULTILEVEL_LOOKUP', '0'), ('LC_ADDRESS', 'en_GB.UTF-8'), ('XDG_RUNTIME_DIR', '/run/user/1004'), ('LANG', 'en_GB.UTF-8'), ('LC_TELEPHONE', 'en_GB.UTF-8'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('AMENT_PREFIX_PATH', '/home/ziyang/work_space/mtc_controller_final/install:/home/ziyang/ws_moveit2/install:/opt/ros/humble'), ('CONDA_PYTHON_EXE', '/home/ziyang/miniconda3/bin/python'), ('SHELL', '/bin/bash'), ('LC_NAME', 'en_GB.UTF-8'), ('LESSCLOSE', '/usr/bin/lesspipe %s %s'), ('CMAKE_MODULE_PATH', '/home/ziyang/ws_moveit2/install/share/moveit_task_constructor_core/cmake'), ('LC_MEASUREMENT', 'en_GB.UTF-8'), ('LC_IDENTIFICATION', 'en_GB.UTF-8'), ('PWD', '/home/ziyang/work_space/mtc_controller_final/build/mtc_dynamic'), ('LC_ALL', 'en_US.UTF-8'), ('CUDA_HOME', '/home/ziyang/cuda'), ('CONDA_EXE', '/home/ziyang/miniconda3/bin/conda'), ('SSH_CONNECTION', '10.147.18.155 57948 10.147.18.51 22'), ('XDG_DATA_DIRS', '/usr/share/gnome:/usr/local/share:/usr/share:/var/lib/snapd/desktop'), ('PYTHONPATH', '/home/ziyang/ws_moveit2/install/local/lib/python3.10/dist-packages:/home/ziyang/ws_moveit2/install/lib/python3.10/site-packages:/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages'), ('LC_NUMERIC', 'en_GB.UTF-8'), ('LC_PAPER', 'en_GB.UTF-8'), ('COLCON', '1'), ('CMAKE_PREFIX_PATH', '/home/ziyang/work_space/mtc_controller_final/install:/home/ziyang/ws_moveit2/install:/opt/ros/humble')]), 'shell': False}
+[14.150673] (mtc_dynamic) StdoutLine: {'line': b'-- Install configuration: "Release"\n'}
+[14.150794] (mtc_dynamic) StdoutLine: {'line': b'-- Installing: /home/ziyang/work_space/mtc_controller_final/install/lib/libmtc_dynamic_pick_place_task.so\n'}
+[14.152064] (mtc_dynamic) StdoutLine: {'line': b'-- Set runtime path of "/home/ziyang/work_space/mtc_controller_final/install/lib/libmtc_dynamic_pick_place_task.so" to ""\n'}
+[14.152171] (mtc_dynamic) StdoutLine: {'line': b'-- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/include/mtc_dynamic\n'}
+[14.152211] (mtc_dynamic) StdoutLine: {'line': b'-- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/include/mtc_dynamic/collectEnvDemo_parameters.hpp\n'}
+[14.152258] (mtc_dynamic) StdoutLine: {'line': b'-- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/include/mtc_dynamic/pick_place_demo_parameters.hpp\n'}
+[14.152287] (mtc_dynamic) StdoutLine: {'line': b'-- Installing: /home/ziyang/work_space/mtc_controller_final/install/lib/mtc_dynamic/pick_place_demo\n'}
+[14.152768] (mtc_dynamic) StdoutLine: {'line': b'-- Set runtime path of "/home/ziyang/work_space/mtc_controller_final/install/lib/mtc_dynamic/pick_place_demo" to ""\n'}
+[14.152805] (mtc_dynamic) StdoutLine: {'line': b'-- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/include/mtc_dynamic\n'}
+[14.152836] (mtc_dynamic) StdoutLine: {'line': b'-- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/include/mtc_dynamic/collectEnvDemo_parameters.hpp\n'}
+[14.152871] (mtc_dynamic) StdoutLine: {'line': b'-- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/include/mtc_dynamic/pick_place_demo_parameters.hpp\n'}
+[14.152960] (mtc_dynamic) StdoutLine: {'line': b'-- Installing: /home/ziyang/work_space/mtc_controller_final/install/lib/mtc_dynamic/collectEnvDemo\n'}
+[14.153523] (mtc_dynamic) StdoutLine: {'line': b'-- Set runtime path of "/home/ziyang/work_space/mtc_controller_final/install/lib/mtc_dynamic/collectEnvDemo" to ""\n'}
+[14.153561] (mtc_dynamic) StdoutLine: {'line': b'-- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/launch\n'}
+[14.153590] (mtc_dynamic) StdoutLine: {'line': b'-- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/launch/real_robot_moveit.launch.py\n'}
+[14.153623] (mtc_dynamic) StdoutLine: {'line': b'-- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/launch/demo.launch.py\n'}
+[14.153668] (mtc_dynamic) StdoutLine: {'line': b'-- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/launch/run.launch.py\n'}
+[14.153691] (mtc_dynamic) StdoutLine: {'line': b'-- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/config\n'}
+[14.153713] (mtc_dynamic) StdoutLine: {'line': b'-- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/config/mtc.rviz\n'}
+[14.153733] (mtc_dynamic) StdoutLine: {'line': b'-- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/config/octomap.yaml\n'}
+[14.153754] (mtc_dynamic) StdoutLine: {'line': b'-- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/config/panda_config.yaml\n'}
+[14.153785] (mtc_dynamic) StdoutLine: {'line': b'-- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/config/gripper_moveit_controllers.yaml\n'}
+[14.153827] (mtc_dynamic) StdoutLine: {'line': b'-- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/share/ament_index/resource_index/package_run_dependencies/mtc_dynamic\n'}
+[14.153862] (mtc_dynamic) StdoutLine: {'line': b'-- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/share/ament_index/resource_index/parent_prefix_path/mtc_dynamic\n'}
+[14.153881] (mtc_dynamic) StdoutLine: {'line': b'-- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/environment/ament_prefix_path.sh\n'}
+[14.153903] (mtc_dynamic) StdoutLine: {'line': b'-- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/environment/ament_prefix_path.dsv\n'}
+[14.153923] (mtc_dynamic) StdoutLine: {'line': b'-- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/environment/path.sh\n'}
+[14.153944] (mtc_dynamic) StdoutLine: {'line': b'-- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/environment/path.dsv\n'}
+[14.153974] (mtc_dynamic) StdoutLine: {'line': b'-- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/local_setup.bash\n'}
+[14.154016] (mtc_dynamic) StdoutLine: {'line': b'-- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/local_setup.sh\n'}
+[14.154037] (mtc_dynamic) StdoutLine: {'line': b'-- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/local_setup.zsh\n'}
+[14.154065] (mtc_dynamic) StdoutLine: {'line': b'-- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/local_setup.dsv\n'}
+[14.154099] (mtc_dynamic) StdoutLine: {'line': b'-- Installing: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/package.dsv\n'}
+[14.154141] (mtc_dynamic) StdoutLine: {'line': b'-- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/share/ament_index/resource_index/packages/mtc_dynamic\n'}
+[14.154172] (mtc_dynamic) StdoutLine: {'line': b'-- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/cmake/mtc_dynamicConfig.cmake\n'}
+[14.154203] (mtc_dynamic) StdoutLine: {'line': b'-- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/cmake/mtc_dynamicConfig-version.cmake\n'}
+[14.154239] (mtc_dynamic) StdoutLine: {'line': b'-- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/package.xml\n'}
+[14.155794] (mtc_dynamic) CommandEnded: {'returncode': 0}
+[14.164485] (mtc_dynamic) JobEnded: {'identifier': 'mtc_dynamic', 'rc': 0}
+[14.164853] (-) EventReactorShutdown: {}

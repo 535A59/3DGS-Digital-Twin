@@ -1,0 +1,113 @@
+[0.006s] Invoking command in '/home/ziyang/work_space/mtc_controller_final/build/mtc_dynamic': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake /home/ziyang/work_space/mtc_controller_final/src -DCMAKE_INSTALL_PREFIX=/home/ziyang/work_space/mtc_controller_final/install
+[0.036s] -- The C compiler identification is GNU 11.4.0
+[0.065s] -- The CXX compiler identification is GNU 11.4.0
+[0.069s] -- Detecting C compiler ABI info
+[0.108s] -- Detecting C compiler ABI info - done
+[0.113s] -- Check for working C compiler: /usr/bin/cc - skipped
+[0.113s] -- Detecting C compile features
+[0.113s] -- Detecting C compile features - done
+[0.115s] -- Detecting CXX compiler ABI info
+[0.160s] -- Detecting CXX compiler ABI info - done
+[0.164s] -- Check for working CXX compiler: /usr/bin/c++ - skipped
+[0.165s] -- Detecting CXX compile features
+[0.165s] -- Detecting CXX compile features - done
+[0.166s] -- Found ament_cmake: 1.3.11 (/opt/ros/humble/share/ament_cmake/cmake)
+[0.248s] -- Found Python3: /usr/bin/python3 (found version "3.10.12") found components: Interpreter 
+[0.294s] -- Found generate_parameter_library: 0.4.0 (/opt/ros/humble/share/generate_parameter_library/cmake)
+[0.296s] -- Found parameter_traits: 0.4.0 (/opt/ros/humble/share/parameter_traits/cmake)
+[0.321s] -- Found rosidl_generator_c: 3.1.6 (/opt/ros/humble/share/rosidl_generator_c/cmake)
+[0.323s] -- Found rosidl_adapter: 3.1.6 (/opt/ros/humble/share/rosidl_adapter/cmake)
+[0.327s] -- Found rosidl_generator_cpp: 3.1.6 (/opt/ros/humble/share/rosidl_generator_cpp/cmake)
+[0.333s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[0.341s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[0.364s] -- Found rmw_implementation_cmake: 6.1.2 (/opt/ros/humble/share/rmw_implementation_cmake/cmake)
+[0.365s] -- Found rmw_fastrtps_cpp: 6.2.7 (/opt/ros/humble/share/rmw_fastrtps_cpp/cmake)
+[0.410s] -- Found OpenSSL: /usr/lib/x86_64-linux-gnu/libcrypto.so (found version "3.0.2")  
+[0.426s] -- Found FastRTPS: /opt/ros/humble/include  
+[0.448s] -- Using RMW implementation 'rmw_fastrtps_cpp' as default
+[0.454s] -- Looking for pthread.h
+[0.494s] -- Looking for pthread.h - found
+[0.494s] -- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+[0.537s] -- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success
+[0.537s] -- Found Threads: TRUE  
+[0.570s] -- Found rclcpp_lifecycle: 16.0.12 (/opt/ros/humble/share/rclcpp_lifecycle/cmake)
+[0.580s] -- Found moveit_common: 2.5.9 (/home/ziyang/ws_moveit2/install/share/moveit_common/cmake)
+[0.612s] [0mmtc_dynamic: You did not request a specific build type: Choosing 'Release' for maximum performance[0m
+[0.612s] -- Found moveit_core: 2.5.9 (/home/ziyang/ws_moveit2/install/share/moveit_core/cmake)
+[0.631s] -- Found Boost: /usr/lib/x86_64-linux-gnu/cmake/Boost-1.74.0/BoostConfig.cmake (found version "1.74.0") found components: chrono date_time filesystem iostreams program_options regex serialization system thread 
+[0.653s] -- Found Boost: /usr/lib/x86_64-linux-gnu/cmake/Boost-1.74.0/BoostConfig.cmake (found version "1.74.0") found components: filesystem 
+[0.710s] -- library: /usr/lib/x86_64-linux-gnu/libcurl.so
+[0.747s] -- Found Eigen3: TRUE (found version "3.4.0") 
+[0.747s] -- Ensuring Eigen3 include directory is part of orocos-kdl CMake target
+[0.866s] -- Found moveit_ros_planning: 2.5.9 (/home/ziyang/ws_moveit2/install/share/moveit_ros_planning/cmake)
+[0.869s] -- Found Boost: /usr/lib/x86_64-linux-gnu/cmake/Boost-1.74.0/BoostConfig.cmake (found version "1.74.0") found components: system filesystem date_time program_options thread chrono 
+[0.880s] -- Found moveit_ros_planning_interface: 2.5.9 (/home/ziyang/ws_moveit2/install/share/moveit_ros_planning_interface/cmake)
+[0.882s] -- Found Boost: /usr/lib/x86_64-linux-gnu/cmake/Boost-1.74.0/BoostConfig.cmake (found version "1.74.0") found components: date_time filesystem program_options system thread 
+[0.889s] -- Found Boost: /usr/lib/x86_64-linux-gnu/cmake/Boost-1.74.0/BoostConfig.cmake (found version "1.74.0") found components: thread system filesystem regex date_time program_options 
+[0.900s] -- Found Boost: /usr/lib/x86_64-linux-gnu/cmake/Boost-1.74.0/BoostConfig.cmake (found version "1.74.0") found components: system filesystem date_time program_options thread 
+[0.913s] -- Found moveit_task_constructor_core: 0.1.3 (/home/ziyang/ws_moveit2/install/share/moveit_task_constructor_core/cmake)
+[0.949s] -- Configuring done
+[0.979s] -- Generating done
+[0.988s] -- Build files have been written to: /home/ziyang/work_space/mtc_controller_final/build/mtc_dynamic
+[0.996s] Invoked command in '/home/ziyang/work_space/mtc_controller_final/build/mtc_dynamic' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake /home/ziyang/work_space/mtc_controller_final/src -DCMAKE_INSTALL_PREFIX=/home/ziyang/work_space/mtc_controller_final/install
+[0.998s] Invoking command in '/home/ziyang/work_space/mtc_controller_final/build/mtc_dynamic': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --build /home/ziyang/work_space/mtc_controller_final/build/mtc_dynamic -- -j32 -l32
+[1.027s] [ 18%] [34m[1mRunning `/opt/ros/humble/bin/generate_parameter_library_cpp /home/ziyang/work_space/mtc_controller_final/build/mtc_dynamic/include/mtc_dynamic/collectEnvDemo_parameters.hpp /home/ziyang/work_space/mtc_controller_final/src/src/collectEnvDemo_parameters.yaml `[0m
+[1.027s] [ 18%] [34m[1mRunning `/opt/ros/humble/bin/generate_parameter_library_cpp /home/ziyang/work_space/mtc_controller_final/build/mtc_dynamic/include/mtc_dynamic/pick_place_demo_parameters.hpp /home/ziyang/work_space/mtc_controller_final/src/src/pick_place_demo_parameters.yaml `[0m
+[1.324s] [ 27%] [34m[1mCreating deprecated header file /home/ziyang/work_space/mtc_controller_final/build/mtc_dynamic/include/pick_place_demo_parameters.hpp[0m
+[1.324s] [ 36%] [34m[1mCreating deprecated header file /home/ziyang/work_space/mtc_controller_final/build/mtc_dynamic/include/collectEnvDemo_parameters.hpp[0m
+[1.343s] [ 36%] Built target pick_place_demo_parameters
+[1.348s] [ 36%] Built target collectEnvDemo_parameters
+[1.354s] [ 45%] [32mBuilding CXX object CMakeFiles/mtc_dynamic_pick_place_task.dir/src/pick_place_task.cpp.o[0m
+[1.356s] [ 54%] [32mBuilding CXX object CMakeFiles/mtc_dynamic_pick_place_task.dir/src/geometry_utils.cpp.o[0m
+[4.761s] [01m[K/home/ziyang/work_space/mtc_controller_final/src/src/pick_place_task.cpp:[m[K In member function ‘[01m[Kbool mtc_dynamic::PickPlaceTask::init(const SharedPtr&, const pick_place_task_demo::Params&)[m[K’:
+[4.761s] [01m[K/home/ziyang/work_space/mtc_controller_final/src/src/pick_place_task.cpp:435:12:[m[K [01;35m[Kwarning: [m[Kvariable ‘[01m[Kpick_stage_ptr_1[m[K’ set but not used [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wunused-but-set-variable-Wunused-but-set-variable]8;;[m[K]
+[4.761s]   435 |     Stage* [01;35m[Kpick_stage_ptr_1[m[K = nullptr;
+[4.761s]       |            [01;35m[K^~~~~~~~~~~~~~~~[m[K
+[13.808s] [ 63%] [32m[1mLinking CXX shared library libmtc_dynamic_pick_place_task.so[0m
+[14.004s] [ 63%] Built target mtc_dynamic_pick_place_task
+[14.016s] [ 72%] [32mBuilding CXX object CMakeFiles/mtc_dynamic_collectEnvDemo.dir/src/collectEnvDemo.cpp.o[0m
+[14.016s] [ 81%] [32mBuilding CXX object CMakeFiles/mtc_dynamic_pick_place_demo.dir/src/pick_place_demo.cpp.o[0m
+[20.030s] [ 90%] [32m[1mLinking CXX executable collectEnvDemo[0m
+[20.141s] [100%] [32m[1mLinking CXX executable pick_place_demo[0m
+[20.220s] [100%] Built target mtc_dynamic_collectEnvDemo
+[20.301s] [100%] Built target mtc_dynamic_pick_place_demo
+[20.307s] Invoked command in '/home/ziyang/work_space/mtc_controller_final/build/mtc_dynamic' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --build /home/ziyang/work_space/mtc_controller_final/build/mtc_dynamic -- -j32 -l32
+[20.313s] Invoking command in '/home/ziyang/work_space/mtc_controller_final/build/mtc_dynamic': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --install /home/ziyang/work_space/mtc_controller_final/build/mtc_dynamic
+[20.316s] -- Install configuration: "Release"
+[20.316s] -- Installing: /home/ziyang/work_space/mtc_controller_final/install/lib/libmtc_dynamic_pick_place_task.so
+[20.317s] -- Set runtime path of "/home/ziyang/work_space/mtc_controller_final/install/lib/libmtc_dynamic_pick_place_task.so" to ""
+[20.317s] -- Installing: /home/ziyang/work_space/mtc_controller_final/install/include/mtc_dynamic
+[20.317s] -- Installing: /home/ziyang/work_space/mtc_controller_final/install/include/mtc_dynamic/collectEnvDemo_parameters.hpp
+[20.318s] -- Installing: /home/ziyang/work_space/mtc_controller_final/install/include/mtc_dynamic/pick_place_demo_parameters.hpp
+[20.318s] -- Installing: /home/ziyang/work_space/mtc_controller_final/install/lib/mtc_dynamic/pick_place_demo
+[20.318s] -- Set runtime path of "/home/ziyang/work_space/mtc_controller_final/install/lib/mtc_dynamic/pick_place_demo" to ""
+[20.318s] -- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/include/mtc_dynamic
+[20.318s] -- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/include/mtc_dynamic/collectEnvDemo_parameters.hpp
+[20.318s] -- Up-to-date: /home/ziyang/work_space/mtc_controller_final/install/include/mtc_dynamic/pick_place_demo_parameters.hpp
+[20.318s] -- Installing: /home/ziyang/work_space/mtc_controller_final/install/lib/mtc_dynamic/collectEnvDemo
+[20.318s] -- Set runtime path of "/home/ziyang/work_space/mtc_controller_final/install/lib/mtc_dynamic/collectEnvDemo" to ""
+[20.318s] -- Installing: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/launch
+[20.318s] -- Installing: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/launch/real_robot_moveit.launch.py
+[20.318s] -- Installing: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/launch/demo.launch.py
+[20.318s] -- Installing: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/launch/run.launch.py
+[20.318s] -- Installing: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/config
+[20.318s] -- Installing: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/config/mtc.rviz
+[20.318s] -- Installing: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/config/octomap.yaml
+[20.318s] -- Installing: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/config/panda_config.yaml
+[20.318s] -- Installing: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/config/gripper_moveit_controllers.yaml
+[20.319s] -- Installing: /home/ziyang/work_space/mtc_controller_final/install/share/ament_index/resource_index/package_run_dependencies/mtc_dynamic
+[20.319s] -- Installing: /home/ziyang/work_space/mtc_controller_final/install/share/ament_index/resource_index/parent_prefix_path/mtc_dynamic
+[20.319s] -- Installing: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/environment/ament_prefix_path.sh
+[20.319s] -- Installing: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/environment/ament_prefix_path.dsv
+[20.319s] -- Installing: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/environment/path.sh
+[20.319s] -- Installing: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/environment/path.dsv
+[20.319s] -- Installing: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/local_setup.bash
+[20.319s] -- Installing: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/local_setup.sh
+[20.319s] -- Installing: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/local_setup.zsh
+[20.319s] -- Installing: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/local_setup.dsv
+[20.319s] -- Installing: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/package.dsv
+[20.319s] -- Installing: /home/ziyang/work_space/mtc_controller_final/install/share/ament_index/resource_index/packages/mtc_dynamic
+[20.319s] -- Installing: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/cmake/mtc_dynamicConfig.cmake
+[20.319s] -- Installing: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/cmake/mtc_dynamicConfig-version.cmake
+[20.319s] -- Installing: /home/ziyang/work_space/mtc_controller_final/install/share/mtc_dynamic/package.xml
+[20.320s] Invoked command in '/home/ziyang/work_space/mtc_controller_final/build/mtc_dynamic' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --install /home/ziyang/work_space/mtc_controller_final/build/mtc_dynamic

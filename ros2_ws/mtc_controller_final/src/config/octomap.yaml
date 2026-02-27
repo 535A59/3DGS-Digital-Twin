@@ -1,0 +1,7 @@
+planning_scene_monitor:
+  ros__parameters:
+    
+    # 在这里定义传感器插件
+    sensors:
+      - sensor_plugin: occupancy_map_monitor/OctomapUpdater
+        map_topic: /octomap_binary

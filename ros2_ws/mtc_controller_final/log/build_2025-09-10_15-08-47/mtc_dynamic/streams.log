@@ -1,0 +1,25 @@
+[0.007s] Invoking command in '/home/ziyang/work_space/mtc_controller_final/build/mtc_dynamic': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --build /home/ziyang/work_space/mtc_controller_final/build/mtc_dynamic -- -j32 -l32
+[0.040s] [ 18%] Built target pick_place_demo_parameters
+[0.040s] [ 36%] Built target collectEnvDemo_parameters
+[0.053s] [35m[1mConsolidate compiler generated dependencies of target mtc_dynamic_pick_place_task[0m
+[0.077s] [ 45%] [32mBuilding CXX object CMakeFiles/mtc_dynamic_pick_place_task.dir/src/pick_place_task.cpp.o[0m
+[3.737s] [01m[K/home/ziyang/work_space/mtc_controller_final/src/src/pick_place_task.cpp:[m[K In member function ‘[01m[Kbool mtc_dynamic::PickPlaceTask::init(const SharedPtr&, const pick_place_task_demo::Params&)[m[K’:
+[3.737s] [01m[K/home/ziyang/work_space/mtc_controller_final/src/src/pick_place_task.cpp:580:15:[m[K [01;31m[Kerror: [m[K‘[01m[Kusing Quaternion = struct geometry_msgs::msg::Quaternion_<std::allocator<void> >[m[K’ {aka ‘[01m[Kstruct geometry_msgs::msg::Quaternion_<std::allocator<void> >[m[K’} has no member named ‘[01m[KsetRPY[m[K’
+[3.737s]   580 |             q.[01;31m[KsetRPY[m[K(0, 0, M_PI/2);
+[3.737s]       |               [01;31m[K^~~~~~[m[K
+[3.737s] [01m[K/home/ziyang/work_space/mtc_controller_final/src/src/pick_place_task.cpp:581:46:[m[K [01;31m[Kerror: [m[Kexpression cannot be used as a function
+[3.737s]   581 |             target2_pose_.orientation.x = [01;31m[Kq.x()[m[K;
+[3.737s]       |                                           [01;31m[K~~~^~[m[K
+[3.737s] [01m[K/home/ziyang/work_space/mtc_controller_final/src/src/pick_place_task.cpp:582:46:[m[K [01;31m[Kerror: [m[Kexpression cannot be used as a function
+[3.737s]   582 |             target2_pose_.orientation.y = [01;31m[Kq.y()[m[K;
+[3.737s]       |                                           [01;31m[K~~~^~[m[K
+[3.737s] [01m[K/home/ziyang/work_space/mtc_controller_final/src/src/pick_place_task.cpp:583:46:[m[K [01;31m[Kerror: [m[Kexpression cannot be used as a function
+[3.737s]   583 |             target2_pose_.orientation.z = [01;31m[Kq.z()[m[K;
+[3.737s]       |                                           [01;31m[K~~~^~[m[K
+[3.737s] [01m[K/home/ziyang/work_space/mtc_controller_final/src/src/pick_place_task.cpp:584:46:[m[K [01;31m[Kerror: [m[Kexpression cannot be used as a function
+[3.738s]   584 |             target2_pose_.orientation.w = [01;31m[Kq.w()[m[K;
+[3.738s]       |                                           [01;31m[K~~~^~[m[K
+[7.974s] gmake[2]: *** [CMakeFiles/mtc_dynamic_pick_place_task.dir/build.make:76: CMakeFiles/mtc_dynamic_pick_place_task.dir/src/pick_place_task.cpp.o] Error 1
+[7.974s] gmake[1]: *** [CMakeFiles/Makefile2:145: CMakeFiles/mtc_dynamic_pick_place_task.dir/all] Error 2
+[7.974s] gmake: *** [Makefile:146: all] Error 2
+[7.976s] Invoked command in '/home/ziyang/work_space/mtc_controller_final/build/mtc_dynamic' returned '2': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --build /home/ziyang/work_space/mtc_controller_final/build/mtc_dynamic -- -j32 -l32

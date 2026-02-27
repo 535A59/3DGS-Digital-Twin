@@ -1,0 +1,14 @@
+/home/ziyang/work_space/mtc_controller_final/build/mtc_dynamic/CMakeFiles/uninstall.dir
+/home/ziyang/work_space/mtc_controller_final/build/mtc_dynamic/CMakeFiles/mtc_dynamic_uninstall.dir
+/home/ziyang/work_space/mtc_controller_final/build/mtc_dynamic/CMakeFiles/mtc_dynamic_pick_place_task.dir
+/home/ziyang/work_space/mtc_controller_final/build/mtc_dynamic/CMakeFiles/mtc_dynamic_pick_place_demo.dir
+/home/ziyang/work_space/mtc_controller_final/build/mtc_dynamic/CMakeFiles/pick_place_demo_parameters.dir
+/home/ziyang/work_space/mtc_controller_final/build/mtc_dynamic/CMakeFiles/mtc_dynamic_collectEnvDemo.dir
+/home/ziyang/work_space/mtc_controller_final/build/mtc_dynamic/CMakeFiles/collectEnvDemo_parameters.dir
+/home/ziyang/work_space/mtc_controller_final/build/mtc_dynamic/CMakeFiles/test.dir
+/home/ziyang/work_space/mtc_controller_final/build/mtc_dynamic/CMakeFiles/edit_cache.dir
+/home/ziyang/work_space/mtc_controller_final/build/mtc_dynamic/CMakeFiles/rebuild_cache.dir
+/home/ziyang/work_space/mtc_controller_final/build/mtc_dynamic/CMakeFiles/list_install_components.dir
+/home/ziyang/work_space/mtc_controller_final/build/mtc_dynamic/CMakeFiles/install.dir
+/home/ziyang/work_space/mtc_controller_final/build/mtc_dynamic/CMakeFiles/install/local.dir
+/home/ziyang/work_space/mtc_controller_final/build/mtc_dynamic/CMakeFiles/install/strip.dir

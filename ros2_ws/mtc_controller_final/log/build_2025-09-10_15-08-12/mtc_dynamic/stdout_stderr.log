@@ -1,0 +1,11 @@
+[ 18%] Built target pick_place_demo_parameters
+[ 36%] Built target collectEnvDemo_parameters
+[35m[1mConsolidate compiler generated dependencies of target mtc_dynamic_pick_place_task[0m
+[ 45%] [32mBuilding CXX object CMakeFiles/mtc_dynamic_pick_place_task.dir/src/pick_place_task.cpp.o[0m
+[01m[K/home/ziyang/work_space/mtc_controller_final/src/src/pick_place_task.cpp:[m[K In member function ‘[01m[Kbool mtc_dynamic::PickPlaceTask::init(const SharedPtr&, const pick_place_task_demo::Params&)[m[K’:
+[01m[K/home/ziyang/work_space/mtc_controller_final/src/src/pick_place_task.cpp:579:13:[m[K [01;31m[Kerror: [m[K‘[01m[Kq[m[K’ was not declared in this scope
+  579 |             [01;31m[Kq[m[K.setRPY(0, 0, M_PI/2);
+      |             [01;31m[K^[m[K
+gmake[2]: *** [CMakeFiles/mtc_dynamic_pick_place_task.dir/build.make:76: CMakeFiles/mtc_dynamic_pick_place_task.dir/src/pick_place_task.cpp.o] Error 1
+gmake[1]: *** [CMakeFiles/Makefile2:145: CMakeFiles/mtc_dynamic_pick_place_task.dir/all] Error 2
+gmake: *** [Makefile:146: all] Error 2

@@ -1,0 +1,38 @@
+# MoveIt2 Controllers Configuration
+# ================================
+#
+# This file defines the controllers that MoveIt2 will use to send commands
+# to the robot's hardware drivers (in our case, the franka_moveit_bridge).
+#
+# Each controller has a name (e.g., panda_arm_controller) which must match
+# the name used in your SRDF and kinematics configuration.
+#
+
+controller_names:
+  - panda_arm_controller
+  - panda_hand_controller
+
+# Configuration for the ARM controller
+# ====================================
+panda_arm_controller:
+  type: FollowJointTrajectory # Specifies that this controller uses the FollowJointTrajectory action interface.
+  action_ns: follow_joint_trajectory # The namespace for the action. MoveIt will publish to /panda_arm_controller/follow_joint_trajectory.
+  default: true # This makes it the default controller for the arm group.
+  joints:
+    - panda_joint1
+    - panda_joint2
+    - panda_joint3
+    - panda_joint4
+    - panda_joint5
+    - panda_joint6
+    - panda_joint7
+
+# Configuration for the HAND (Gripper) controller
+# ===============================================
+panda_hand_controller:
+  type: GripperCommand # Specifies that this controller uses the GripperCommand action interface.
+  action_ns: gripper_cmd # The namespace for the action. MoveIt will publish to /panda_hand_controller/gripper_cmd.
+  default: true # This makes it the default controller for the hand group.
+  joints:
+    - panda_finger_joint1 # The joint(s) that this controller commands. For the Franka gripper, it's often represented by one or two finger joints.
+    # - panda_finger_joint2 # Uncomment if your URDF/SRDF uses two joints for the gripper.

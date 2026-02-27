@@ -1,0 +1,111 @@
+[0.000000] (-) TimerEvent: {}
+[0.000376] (mtc_dynamic) JobQueued: {'identifier': 'mtc_dynamic', 'dependencies': OrderedDict()}
+[0.000404] (mtc_dynamic) JobStarted: {'identifier': 'mtc_dynamic'}
+[0.004767] (mtc_dynamic) JobProgress: {'identifier': 'mtc_dynamic', 'progress': 'cmake'}
+[0.005251] (mtc_dynamic) JobProgress: {'identifier': 'mtc_dynamic', 'progress': 'build'}
+[0.005786] (mtc_dynamic) Command: {'cmd': ['/usr/bin/cmake', '--build', '/home/ziyang/work_space/mtc_controller_final/build/mtc_dynamic', '--', '-j32', '-l32'], 'cwd': '/home/ziyang/work_space/mtc_controller_final/build/mtc_dynamic', 'env': OrderedDict([('LESSOPEN', '| /usr/bin/lesspipe %s'), ('LANGUAGE', 'en_GB:en'), ('USER', 'ziyang'), ('SSH_CLIENT', '10.147.18.155 57948 22'), ('LC_TIME', 'en_GB.UTF-8'), ('XDG_SESSION_TYPE', 'tty'), ('SHLVL', '1'), ('LD_LIBRARY_PATH', '/home/ziyang/work_space/mtc_controller_final/install/lib:/home/ziyang/ws_moveit2/install/lib:/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib:/usr/lib/x86_64-linux-gnu:/usr/local/lib:/home/ziyang/cuda/lib64:'), ('MOTD_SHOWN', 'pam'), ('HOME', '/home/ziyang'), ('CONDA_SHLVL', '0'), ('OLDPWD', '/home/ziyang'), ('SSH_TTY', '/dev/pts/46'), ('ROS_PYTHON_VERSION', '3'), ('LC_MONETARY', 'en_GB.UTF-8'), ('DBUS_SESSION_BUS_ADDRESS', 'unix:path=/run/user/1004/bus'), ('_CE_M', ''), ('COLCON_PREFIX_PATH', '/home/ziyang/work_space/mtc_controller_final/install:/home/ziyang/ws_moveit2/install'), ('ROS_DISTRO', 'humble'), ('LOGNAME', 'ziyang'), ('_', '/usr/bin/colcon'), ('ROS_VERSION', '2'), ('XDG_SESSION_CLASS', 'user'), ('TERM', 'xterm-256color'), ('XDG_SESSION_ID', '226'), ('DOTNET_ROOT', '/home/ziyang/dotnet'), ('_CE_CONDA', ''), ('ROS_LOCALHOST_ONLY', '0'), ('PATH', '/home/ziyang/ws_moveit2/install/bin:/opt/ros/humble/bin:/home/ziyang/dotnet:/home/ziyang/.cargo/bin:/home/ziyang/work_space/abseil-cpp/package/bin:/home/ziyang/cuda/bin:/home/ziyang/miniconda3/condabin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/ziyang/.dotnet/tools'), ('DOTNET_MULTILEVEL_LOOKUP', '0'), ('LC_ADDRESS', 'en_GB.UTF-8'), ('XDG_RUNTIME_DIR', '/run/user/1004'), ('LANG', 'en_GB.UTF-8'), ('LC_TELEPHONE', 'en_GB.UTF-8'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('AMENT_PREFIX_PATH', '/home/ziyang/work_space/mtc_controller_final/install:/home/ziyang/ws_moveit2/install:/opt/ros/humble'), ('CONDA_PYTHON_EXE', '/home/ziyang/miniconda3/bin/python'), ('SHELL', '/bin/bash'), ('LC_NAME', 'en_GB.UTF-8'), ('LESSCLOSE', '/usr/bin/lesspipe %s %s'), ('CMAKE_MODULE_PATH', '/home/ziyang/ws_moveit2/install/share/moveit_task_constructor_core/cmake'), ('LC_MEASUREMENT', 'en_GB.UTF-8'), ('LC_IDENTIFICATION', 'en_GB.UTF-8'), ('PWD', '/home/ziyang/work_space/mtc_controller_final/build/mtc_dynamic'), ('LC_ALL', 'en_US.UTF-8'), ('CUDA_HOME', '/home/ziyang/cuda'), ('CONDA_EXE', '/home/ziyang/miniconda3/bin/conda'), ('SSH_CONNECTION', '10.147.18.155 57948 10.147.18.51 22'), ('XDG_DATA_DIRS', '/usr/share/gnome:/usr/local/share:/usr/share:/var/lib/snapd/desktop'), ('PYTHONPATH', '/home/ziyang/ws_moveit2/install/local/lib/python3.10/dist-packages:/home/ziyang/ws_moveit2/install/lib/python3.10/site-packages:/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages'), ('LC_NUMERIC', 'en_GB.UTF-8'), ('LC_PAPER', 'en_GB.UTF-8'), ('COLCON', '1'), ('CMAKE_PREFIX_PATH', '/home/ziyang/work_space/mtc_controller_final/install:/home/ziyang/ws_moveit2/install:/opt/ros/humble')]), 'shell': False}
+[0.039927] (mtc_dynamic) StdoutLine: {'line': b'[ 18%] Built target pick_place_demo_parameters\n'}
+[0.040329] (mtc_dynamic) StdoutLine: {'line': b'[ 36%] Built target collectEnvDemo_parameters\n'}
+[0.053610] (mtc_dynamic) StdoutLine: {'line': b'\x1b[35m\x1b[1mConsolidate compiler generated dependencies of target mtc_dynamic_pick_place_task\x1b[0m\n'}
+[0.077200] (mtc_dynamic) StdoutLine: {'line': b'[ 45%] \x1b[32mBuilding CXX object CMakeFiles/mtc_dynamic_pick_place_task.dir/src/pick_place_task.cpp.o\x1b[0m\n'}
+[0.099799] (-) TimerEvent: {}
+[0.200034] (-) TimerEvent: {}
+[0.300268] (-) TimerEvent: {}
+[0.400484] (-) TimerEvent: {}
+[0.500695] (-) TimerEvent: {}
+[0.600909] (-) TimerEvent: {}
+[0.701151] (-) TimerEvent: {}
+[0.801356] (-) TimerEvent: {}
+[0.901573] (-) TimerEvent: {}
+[1.001817] (-) TimerEvent: {}
+[1.102028] (-) TimerEvent: {}
+[1.202243] (-) TimerEvent: {}
+[1.302486] (-) TimerEvent: {}
+[1.402712] (-) TimerEvent: {}
+[1.502927] (-) TimerEvent: {}
+[1.603127] (-) TimerEvent: {}
+[1.703341] (-) TimerEvent: {}
+[1.803596] (-) TimerEvent: {}
+[1.903827] (-) TimerEvent: {}
+[2.004055] (-) TimerEvent: {}
+[2.104326] (-) TimerEvent: {}
+[2.204608] (-) TimerEvent: {}
+[2.304879] (-) TimerEvent: {}
+[2.405213] (-) TimerEvent: {}
+[2.505493] (-) TimerEvent: {}
+[2.605760] (-) TimerEvent: {}
+[2.706058] (-) TimerEvent: {}
+[2.806343] (-) TimerEvent: {}
+[2.906611] (-) TimerEvent: {}
+[3.006873] (-) TimerEvent: {}
+[3.107134] (-) TimerEvent: {}
+[3.207408] (-) TimerEvent: {}
+[3.307676] (-) TimerEvent: {}
+[3.407950] (-) TimerEvent: {}
+[3.508205] (-) TimerEvent: {}
+[3.608434] (-) TimerEvent: {}
+[3.708726] (-) TimerEvent: {}
+[3.737095] (mtc_dynamic) StderrLine: {'line': b'\x1b[01m\x1b[K/home/ziyang/work_space/mtc_controller_final/src/src/pick_place_task.cpp:\x1b[m\x1b[K In member function \xe2\x80\x98\x1b[01m\x1b[Kbool mtc_dynamic::PickPlaceTask::init(const SharedPtr&, const pick_place_task_demo::Params&)\x1b[m\x1b[K\xe2\x80\x99:\n'}
+[3.737293] (mtc_dynamic) StderrLine: {'line': b'\x1b[01m\x1b[K/home/ziyang/work_space/mtc_controller_final/src/src/pick_place_task.cpp:580:15:\x1b[m\x1b[K \x1b[01;31m\x1b[Kerror: \x1b[m\x1b[K\xe2\x80\x98\x1b[01m\x1b[Kusing Quaternion = struct geometry_msgs::msg::Quaternion_<std::allocator<void> >\x1b[m\x1b[K\xe2\x80\x99 {aka \xe2\x80\x98\x1b[01m\x1b[Kstruct geometry_msgs::msg::Quaternion_<std::allocator<void> >\x1b[m\x1b[K\xe2\x80\x99} has no member named \xe2\x80\x98\x1b[01m\x1b[KsetRPY\x1b[m\x1b[K\xe2\x80\x99\n'}
+[3.737354] (mtc_dynamic) StderrLine: {'line': b'  580 |             q.\x1b[01;31m\x1b[KsetRPY\x1b[m\x1b[K(0, 0, M_PI/2);\n'}
+[3.737419] (mtc_dynamic) StderrLine: {'line': b'      |               \x1b[01;31m\x1b[K^~~~~~\x1b[m\x1b[K\n'}
+[3.737470] (mtc_dynamic) StderrLine: {'line': b'\x1b[01m\x1b[K/home/ziyang/work_space/mtc_controller_final/src/src/pick_place_task.cpp:581:46:\x1b[m\x1b[K \x1b[01;31m\x1b[Kerror: \x1b[m\x1b[Kexpression cannot be used as a function\n'}
+[3.737520] (mtc_dynamic) StderrLine: {'line': b'  581 |             target2_pose_.orientation.x = \x1b[01;31m\x1b[Kq.x()\x1b[m\x1b[K;\n'}
+[3.737567] (mtc_dynamic) StderrLine: {'line': b'      |                                           \x1b[01;31m\x1b[K~~~^~\x1b[m\x1b[K\n'}
+[3.737620] (mtc_dynamic) StderrLine: {'line': b'\x1b[01m\x1b[K/home/ziyang/work_space/mtc_controller_final/src/src/pick_place_task.cpp:582:46:\x1b[m\x1b[K \x1b[01;31m\x1b[Kerror: \x1b[m\x1b[Kexpression cannot be used as a function\n'}
+[3.737669] (mtc_dynamic) StderrLine: {'line': b'  582 |             target2_pose_.orientation.y = \x1b[01;31m\x1b[Kq.y()\x1b[m\x1b[K;\n'}
+[3.737717] (mtc_dynamic) StderrLine: {'line': b'      |                                           \x1b[01;31m\x1b[K~~~^~\x1b[m\x1b[K\n'}
+[3.737761] (mtc_dynamic) StderrLine: {'line': b'\x1b[01m\x1b[K/home/ziyang/work_space/mtc_controller_final/src/src/pick_place_task.cpp:583:46:\x1b[m\x1b[K \x1b[01;31m\x1b[Kerror: \x1b[m\x1b[Kexpression cannot be used as a function\n'}
+[3.737806] (mtc_dynamic) StderrLine: {'line': b'  583 |             target2_pose_.orientation.z = \x1b[01;31m\x1b[Kq.z()\x1b[m\x1b[K;\n'}
+[3.737851] (mtc_dynamic) StderrLine: {'line': b'      |                                           \x1b[01;31m\x1b[K~~~^~\x1b[m\x1b[K\n'}
+[3.737895] (mtc_dynamic) StderrLine: {'line': b'\x1b[01m\x1b[K/home/ziyang/work_space/mtc_controller_final/src/src/pick_place_task.cpp:584:46:\x1b[m\x1b[K \x1b[01;31m\x1b[Kerror: \x1b[m\x1b[Kexpression cannot be used as a function\n'}
+[3.737939] (mtc_dynamic) StderrLine: {'line': b'  584 |             target2_pose_.orientation.w = \x1b[01;31m\x1b[Kq.w()\x1b[m\x1b[K;\n'}
+[3.737983] (mtc_dynamic) StderrLine: {'line': b'      |                                           \x1b[01;31m\x1b[K~~~^~\x1b[m\x1b[K\n'}
+[3.808821] (-) TimerEvent: {}
+[3.909084] (-) TimerEvent: {}
+[4.009352] (-) TimerEvent: {}
+[4.109622] (-) TimerEvent: {}
+[4.209892] (-) TimerEvent: {}
+[4.310157] (-) TimerEvent: {}
+[4.410424] (-) TimerEvent: {}
+[4.510685] (-) TimerEvent: {}
+[4.610946] (-) TimerEvent: {}
+[4.711207] (-) TimerEvent: {}
+[4.811484] (-) TimerEvent: {}
+[4.911752] (-) TimerEvent: {}
+[5.012024] (-) TimerEvent: {}
+[5.112289] (-) TimerEvent: {}
+[5.212588] (-) TimerEvent: {}
+[5.312849] (-) TimerEvent: {}
+[5.413118] (-) TimerEvent: {}
+[5.513405] (-) TimerEvent: {}
+[5.613676] (-) TimerEvent: {}
+[5.713937] (-) TimerEvent: {}
+[5.814202] (-) TimerEvent: {}
+[5.914422] (-) TimerEvent: {}
+[6.014683] (-) TimerEvent: {}
+[6.114937] (-) TimerEvent: {}
+[6.215195] (-) TimerEvent: {}
+[6.315426] (-) TimerEvent: {}
+[6.415695] (-) TimerEvent: {}
+[6.515962] (-) TimerEvent: {}
+[6.616219] (-) TimerEvent: {}
+[6.716491] (-) TimerEvent: {}
+[6.816748] (-) TimerEvent: {}
+[6.917052] (-) TimerEvent: {}
+[7.017388] (-) TimerEvent: {}
+[7.117655] (-) TimerEvent: {}
+[7.217997] (-) TimerEvent: {}
+[7.318320] (-) TimerEvent: {}
+[7.418624] (-) TimerEvent: {}
+[7.518888] (-) TimerEvent: {}
+[7.619132] (-) TimerEvent: {}
+[7.719364] (-) TimerEvent: {}
+[7.819656] (-) TimerEvent: {}
+[7.919950] (-) TimerEvent: {}
+[7.974407] (mtc_dynamic) StderrLine: {'line': b'gmake[2]: *** [CMakeFiles/mtc_dynamic_pick_place_task.dir/build.make:76: CMakeFiles/mtc_dynamic_pick_place_task.dir/src/pick_place_task.cpp.o] Error 1\n'}
+[7.974600] (mtc_dynamic) StderrLine: {'line': b'gmake[1]: *** [CMakeFiles/Makefile2:145: CMakeFiles/mtc_dynamic_pick_place_task.dir/all] Error 2\n'}
+[7.974732] (mtc_dynamic) StderrLine: {'line': b'gmake: *** [Makefile:146: all] Error 2\n'}
+[7.976798] (mtc_dynamic) CommandEnded: {'returncode': 2}
+[7.982982] (mtc_dynamic) JobEnded: {'identifier': 'mtc_dynamic', 'rc': 2}
+[7.993333] (-) EventReactorShutdown: {}
