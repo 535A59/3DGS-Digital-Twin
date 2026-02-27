@@ -1,0 +1,9 @@
+[submodule "InstantSplat"]
+	path = InstantSplat
+	url = git@github.com:NVlabs/InstantSplat.git
+[submodule "UnityGaussianSplatting"]
+	path = UnityGaussianSplatting
+	url = git@github.com:aras-p/UnityGaussianSplatting.git
+[submodule "ros2-for-unity"]
+	path = ros2-for-unity
+	url = git@github.com:RobotecAI/ros2-for-unity.git
