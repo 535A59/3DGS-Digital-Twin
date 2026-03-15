@@ -1,0 +1,59 @@
+# ============================================================
+# 3DGS Digital Twin — Default Configuration
+# ============================================================
+# All paths below are examples; override them via CLI flags or
+# create a copy of this file for each experiment.
+
+# ----------------------------------------------------------
+# I/O paths (REQUIRED — must be set before running pipeline)
+# ----------------------------------------------------------
+ply:           /path/to/point_cloud.ply       # 3DGS output from InstantSplat
+cameras_json:  /path/to/cameras.json          # Camera parameters (InstantSplat format)
+images_dir:    /path/to/images/               # Training frames used for reconstruction
+mask_dir:      /path/to/masks_json/           # JSON mask output from Step 1 (SAM)
+out_dir:       /path/to/output/               # Root folder for all pipeline outputs
+object_name:   object                         # File stem used for all output files
+
+# ----------------------------------------------------------
+# Step 1 — Semantic Segmentation (SAM)
+# ----------------------------------------------------------
+sam_checkpoint:  sam_vit_h_4b8939.pth         # Path to SAM ViT-H weights
+sam_model_type:  vit_h                        # vit_h | vit_l | vit_b
+device:          ~                            # null = auto-detect (cuda if available)
+
+# ----------------------------------------------------------
+# Step 2 — Semantic Fusion (visibility-aware 3D lifting)
+# ----------------------------------------------------------
+semantic_fusion:
+  vote_fraction:   0.5    # Fraction of cameras required for object label
+  max_iter:        3      # KNN refinement iterations
+  knn_k:           15     # KNN neighbourhood size
+  knn_threshold:   0.6    # Consistency threshold to update a label
+  save_background: false  # Set true to also export background.ply
+
+# ----------------------------------------------------------
+# Step 3 — Geometry Refinement
+# ----------------------------------------------------------
+geometry_refinement:
+
+  # 3a: Intrinsic attribute filter
+  filter:
+    min_alpha:  0.05      # Discard opacity < this (ghost removal)
+    min_scale:  0.00001   # Discard scale < this (micro-noise removal)
+    max_scale:  0.007     # Discard scale > this (macro-ghost removal)
+
+  # 3b: DBSCAN connectivity pruning
+  dbscan:
+    eps:         0.01     # Neighbourhood radius (scene-scale dependent)
+    min_samples: 50       # Minimum neighbours to form a core point
+
+  # 3c: Alpha Shapes meshing
+  meshing:
+    alpha_value:      0.01    # Alpha radius (smaller = tighter mesh)
+    min_opacity:      0.02    # Secondary opacity filter before meshing
+    white_threshold:  1.0     # Remove white (background) Gaussians
+    center_the_cloud: true    # Translate mesh centre to origin
+    transform_coords: false   # Apply model→ROS coordinate transform
+    nb_neighbors:     20      # Outlier removal: neighbour count
+    std_ratio:        2.0     # Outlier removal: std deviation ratio
+    format:           obj     # Output format: obj | ply | stl
