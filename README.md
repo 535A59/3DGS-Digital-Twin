@@ -53,21 +53,31 @@ Sparse RGB Images
 ├── pipeline.py                   # End-to-end orchestration script
 ├── requirements.txt
 ├── configs/
-│   └── default.yaml              # All tuneable parameters
+│   ├── default.yaml              # All tuneable parameters
+│   └── twin_res5.yaml            # Isaac twin export: calibration, objects, targets
 ├── src/
 │   ├── semantic_segmentation/
 │   │   └── sam_segmentation.py   # Interactive SAM segmentation → JSON masks
 │   ├── semantic_fusion/
 │   │   └── fusion.py             # Multi-view voting + KNN 3D lifting
-│   └── geometry_refinement/
-│       ├── filter.py             # Opacity + scale attribute filtering
-│       ├── dbscan_clean.py       # DBSCAN connectivity pruning / splitting
-│       └── meshing.py            # Alpha Shapes watertight meshing
+│   ├── geometry_refinement/
+│   │   ├── filter.py             # Opacity + scale attribute filtering
+│   │   ├── dbscan_clean.py       # DBSCAN connectivity pruning / splitting
+│   │   └── meshing.py            # Alpha Shapes watertight meshing
+│   └── sim_export/
+│       └── export.py             # 3DGS scene → Isaac Sim assets + MTC task file
+├── tools/
+│   └── unity_gs_to_ply.py        # Unity GaussianSplatting .asset → 3DGS PLY
 ├── ros2_ws/
 │   └── mtc_controller_final/     # MoveIt 2 Task Constructor ROS 2 package
 ├── simulation/
+│   ├── isaac/                    # Isaac Sim 6.1 scene, runtime, report
 │   ├── Scripts/                  # Unity C# scripts (see below)
 │   └── Scenes/                   # Unity scene files
+├── docker/moveit/                # ROS 2 Jazzy + MoveIt 2 + MTC image for the twin
+├── scripts/run_twin_demo.sh      # Isaac twin end-to-end demo
+├── tests/                        # Self-checks (python -m tests.<name>)
+├── docs/isaac_twin_contract.md   # Isaac twin frames, file formats, ROS interface
 ├── external/
 │   ├── InstantSplat/             # 3DGS reconstruction (submodule)
 │   ├── UnityGaussianSplatting/   # Unity 3DGS renderer (submodule)
@@ -247,6 +257,89 @@ The collision mesh is imported into Unity alongside the [UnityGaussianSplatting]
 2. Add a `MeshCollider` component (enable **Convex** for physics simulation).
 3. Add a `Rigidbody` component.
 4. Use the [ROS2ForUnity](external/ros2-for-unity/) plugin to bridge Unity ↔ ROS 2 for sensor simulation and command execution.
+
+---
+
+## Isaac Sim Digital Twin
+
+Isaac Sim 6.1 replaces the Unity runtime for the closed-loop pick-and-place demo (paper Sec. 4.1.1, the
+RES5 scene): **box → on the cardboard box, cube → on the placed box, hammer → into the tape frame**.
+
+- The 3DGS splats are what you see; the collision meshes from `src/geometry_refinement` are invisible PhysX
+  rigid bodies (gravity + contact). Each object's splats are parented to its rigid body and move with it.
+- The Franka runs on `isaacsim.ros2.control` inside Isaac. MoveIt 2 + MTC (`mtc_dynamic`) run in a second
+  container and plan against the live object poses Isaac publishes. Grasps are physical (friction only, no attach).
+- World frame = `panda_link0`, Z-up, metres. Frames, file formats and the ROS interface are in
+  [docs/isaac_twin_contract.md](docs/isaac_twin_contract.md).
+
+### Requirements
+
+- Docker with an NVIDIA GPU, the `nvcr.io/nvidia/isaac-sim:6.1.0` image (NGC), and network access for the
+  `ros:jazzy` build of `docker/moveit/Dockerfile` (`run_mtc.sh` builds it on first use).
+- Host Python with `requirements.txt` (numpy, scipy, scikit-learn, plyfile, open3d, opencv, PyYAML, trimesh).
+- Input data in `old_code-data/3dgs_resource/` (not in the repo): `mesh_source/object{1,2,3}-copy.ply`,
+  `GSreal2sim2real/Assets/GaussianAssets/background-copy-cl.*` and `3dgs/RES5/arm.ply`.
+
+### Run
+
+```bash
+# export -> Isaac Sim -> MoveIt/MTC -> recording + report, about 2.5 min
+ROS_DOMAIN_ID=64 PYTHON=python3 scripts/run_twin_demo.sh
+
+# the two recorded cameras side by side (Unity main camera | top view)
+ffmpeg -i output/twin_res5/recording/unity_main.mp4 -i output/twin_res5/recording/top.mp4 \
+    -filter_complex hstack -c:v libx264 -pix_fmt yuv420p output/twin_res5/side_by_side.mp4
+```
+
+`ROS_DOMAIN_ID` must be set and non-zero. Outputs in `output/twin_res5/` are `manifest.json`, `collision/`,
+`mtc_task.yaml`, `isaac.log`, `mtc.log`, `recording/{unity_main,top}.mp4`, `final_state.json` and `report.json`.
+
+The stages can also run on their own:
+
+```bash
+python -m src.sim_export.export --config configs/twin_res5.yaml               # assets + mtc_task.yaml
+ROS_DOMAIN_ID=64 simulation/isaac/run_isaac.sh --seconds 600                  # Isaac container
+ROS_DOMAIN_ID=64 docker/moveit/run_mtc.sh $PWD/output/twin_res5/mtc_task.yaml # MoveIt + MTC container
+python simulation/isaac/twin_report.py --out_dir output/twin_res5 --config configs/twin_res5.yaml
+```
+
+### Calibration and physics settings
+
+- `configs/twin_res5.yaml` keeps the robot base and rotation of the paper's Unity alignment, levels the
+  table to +Z and replaces Unity's scale 2.27 with 1.75 m/unit (the 2.5 cm cube as anchor). The evidence is
+  in `calibration_notes` there.
+- Added for a stable simulation (not part of the paper's method):
+  - a torsional friction patch on the object colliders;
+  - each body's origin and centre of mass at its collider centroid, with uniform density;
+  - the cardboard lid (5 mm) and the box bottom (10 mm) flattened;
+  - masses box 0.15 kg, cube 0.01 kg, hammer 0.12 kg;
+  - a raised finger drive force.
+
+### Results
+
+Three consecutive full runs, each with physical grasps and no unexpected contacts. Values are the horizontal
+error to the target and the final tilt. Pass thresholds: 30 mm horizontal, 15 mm vertical, 15° tilt.
+
+| Run | box → cardboard | cube → box | hammer → frame |
+|-----|-----------------|------------|----------------|
+| I | 6.6 mm, 0° | 1.4 mm, 2.2° | 3.2 mm |
+| J | 5.5 mm, 0° | 1.6 mm, 2.2° | 3.5 mm |
+| K | 2.4 mm, 0° | 1.0 mm, 2.2° | 3.3 mm |
+
+### Known limitations
+
+- The cube ends 5–6 mm low with a 2.2° tilt, and the box can rotate up to about 5.7° in the gripper.
+- The hammer is judged by the 30 mm horizontal tolerance, not by the frame outline.
+- `move_group` segfaults at shutdown, after "Execution complete"; this does not affect the run.
+- `launch/run.launch.py` (the Unity entry point) still uses the old `panda_config.yaml` parameters; the
+  twin uses `launch/isaac.launch.py`.
+
+### Self-checks
+
+```bash
+python -m tests.test_sim_export    # the last two checks need old_code-data/
+python -m tests.test_twin_report
+```
 
 ---
 

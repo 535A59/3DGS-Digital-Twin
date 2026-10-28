@@ -561,7 +561,6 @@
 
 #include <moveit/move_group_interface/move_group_interface.h>
 #include <moveit/robot_trajectory/robot_trajectory.h>
-#include <moveit/trajectory_processing/iterative_time_parameterization.h>
 #include <moveit/robot_model_loader/robot_model_loader.h>
 
 #include <tf2_ros/buffer.h>

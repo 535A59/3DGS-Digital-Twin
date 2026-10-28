@@ -1,8 +1,10 @@
 #include <rclcpp/rclcpp.hpp>
-#include <mtc_dynamic/pick_place_task.h> // ✅ 使用新的头文件路径和命名空间
+#include <mtc_dynamic/pick_place_task.h>
 
 static const rclcpp::Logger LOGGER = rclcpp::get_logger("mtc_dynamic_demo");
 
+// Pick & place every object of `object_names` in order (one MTC task each, re-planned from the
+// current robot/object state), then exit: 0 = all done, 1 = a task failed ("Execution complete" / "Task failed").
 int main(int argc, char** argv) {
 	rclcpp::init(argc, argv);
 	rclcpp::NodeOptions node_options;
@@ -10,26 +12,33 @@ int main(int argc, char** argv) {
 	auto node = rclcpp::Node::make_shared("mtc_dynamic_demo", node_options);
 	std::thread spinning_thread([node] { rclcpp::spin(node); });
 
-	// ✅ 使用正确的参数命名空间
 	const auto param_listener = std::make_shared<pick_place_task_demo::ParamListener>(node);
 	const auto params = param_listener->get_params();
-	
 
-	// ✅ 使用新的命名空间
 	mtc_dynamic::PickPlaceTask pick_place_task("pick_place_task");
+	int rc = 0;
 	if (!pick_place_task.init(node, params)) {
-		RCLCPP_INFO(LOGGER, "Initialization failed");
-		return 1;
+		RCLCPP_ERROR(LOGGER, "Initialization failed");
+		rc = 1;
 	}
-
-	if (pick_place_task.plan(params.max_solutions)) {
-		RCLCPP_INFO(LOGGER, "Planning succeded");
-		pick_place_task.execute();
-	} else {
-		RCLCPP_INFO(LOGGER, "Planning failed");
+	for (const auto& name : params.object_names) {
+		if (rc)
+			break;
+		const auto t0 = node->now();
+		if (!pick_place_task.plan(name, params.max_solutions)) {
+			RCLCPP_ERROR(LOGGER, "Task failed: planning '%s'", name.c_str());
+			rc = 1;
+		} else if (!pick_place_task.execute()) {
+			RCLCPP_ERROR(LOGGER, "Task failed: executing '%s'", name.c_str());
+			rc = 1;
+		} else {
+			RCLCPP_INFO(LOGGER, "Object '%s' done in %.1f s (sim)", name.c_str(), (node->now() - t0).seconds());
+		}
 	}
+	if (!rc)
+		RCLCPP_INFO(LOGGER, "Execution complete: %zu objects", params.object_names.size());
 
-	// Keep introspection alive
+	rclcpp::shutdown();
 	spinning_thread.join();
-	return 0;
+	return rc;
 }

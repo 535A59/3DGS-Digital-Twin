@@ -1,0 +1,44 @@
+# Example of the generated mtc_task.yaml (src/sim_export/export.py writes the real one into out_dir with absolute host paths).
+#   ros2 launch mtc_dynamic isaac.launch.py task:=/abs/path/output/twin_res5/mtc_task.yaml
+/**:
+  ros__parameters:
+    object_names: [box, cube, hammer]
+    mesh_scale_factor: 1.0
+    task_timeout: 180.0
+    objects:
+      box:
+        mesh_path: /abs/path/output/twin_res5/collision/box.obj
+        pose_topic: /box_position
+        target_topic: /box_target_position
+        grasp_offset_xyz: [0.0003, 0.0006, 0.0148]
+        grasp_yaw: -0.5061
+        finger_close: 0.0239
+        approach_min_dist: 0.05
+        approach_max_dist: 0.15
+        lift_min_dist: 0.05
+        lift_max_dist: 0.15
+      cube:
+        mesh_path: /abs/path/output/twin_res5/collision/cube.obj
+        pose_topic: /cube_position
+        target_topic: /cube_target_position
+        grasp_offset_xyz: [-0.0007, 0.0003, 0.0011]
+        grasp_yaw: 1.1694
+        finger_close: 0.0107
+        approach_min_dist: 0.05
+        approach_max_dist: 0.15
+        lift_min_dist: 0.05
+        lift_max_dist: 0.15
+      hammer:
+        mesh_path: /abs/path/output/twin_res5/collision/hammer.obj
+        pose_topic: /hammer_position
+        target_topic: /hammer_target_position
+        grasp_offset_xyz: [-0.0008, 0.0018, 0.0049]
+        grasp_yaw: 0.4014
+        finger_close: 0.0089
+        approach_min_dist: 0.05
+        approach_max_dist: 0.15
+        lift_min_dist: 0.05
+        lift_max_dist: 0.15
+    env_names: [table, cardboard]
+    env_mesh_paths: [/abs/path/output/twin_res5/collision/env_table.obj,
+      /abs/path/output/twin_res5/collision/env_cardboard.obj]

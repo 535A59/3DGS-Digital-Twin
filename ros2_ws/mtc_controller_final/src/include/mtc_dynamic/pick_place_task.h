@@ -1,86 +1,47 @@
 #pragma once
 #include <rclcpp/node.hpp>
-#include <rclcpp/timer.hpp>
 #include <geometry_msgs/msg/pose_stamped.hpp>
 #include <visualization_msgs/msg/marker.hpp>
 #include <mtc_dynamic/pick_place_demo_parameters.hpp>
-#include <atomic>
-#include <memory>
-// MTC, Octomap, and PlanningSceneMonitor headers
+#include <chrono>
+#include <map>
+#include <mutex>
 #include <moveit/task_constructor/task.h>
-#include <octomap_msgs/msg/octomap.hpp>
-#include <moveit/planning_scene_monitor/planning_scene_monitor.h>
-// TF2 (Transform) related headers
-#include <tf2_ros/buffer.h>
-#include <tf2_ros/transform_listener.h>
 
 namespace mtc_dynamic {
 
+// Pick & place of K objects (params.object_names), one MTC task per object:
+//   init() once, then for each object: plan(name) + execute().
 class PickPlaceTask {
 public:
     PickPlaceTask(const std::string& task_name);
+    // Subscribe to all object pose/target topics, wait for the first data, spawn env + object meshes.
     bool init(const rclcpp::Node::SharedPtr& node, const pick_place_task_demo::Params& params);
-    bool plan(const std::size_t max_solutions = 1);
+    // Re-read the object's latest pose/target, update its collision object, build + plan its sub-task.
+    bool plan(const std::string& object_name, const std::size_t max_solutions = 1);
     bool execute();
 
 private:
-    // 回调函数
-    void octomapCallback(const octomap_msgs::msg::Octomap::SharedPtr msg);
+    using Clock = std::chrono::steady_clock;
+    struct ObjectData {
+        rclcpp::Subscription<visualization_msgs::msg::Marker>::SharedPtr pose_sub;
+        rclcpp::Subscription<geometry_msgs::msg::PoseStamped>::SharedPtr target_sub;
+        geometry_msgs::msg::Pose pose;    // body pose in world (latest)
+        geometry_msgs::msg::Pose target;  // target body pose in world (latest)
+        Clock::time_point pose_time{}, target_time{};
+    };
+    // Block until every object has a pose and a target received after `since` (false on timeout/shutdown).
+    bool waitForData(const std::vector<std::string>& names, Clock::time_point since, double timeout_s);
+    void buildTask(const std::string& name, const geometry_msgs::msg::Pose& body,
+                   const geometry_msgs::msg::Pose& target);
 
-    void object1PositionCallback(const visualization_msgs::msg::Marker::ConstSharedPtr msg);
-    void target1PositionCallback(const geometry_msgs::msg::PoseStamped::SharedPtr msg);
-
-    void object2PositionCallback(const visualization_msgs::msg::Marker::ConstSharedPtr msg);
-    void target2PositionCallback(const geometry_msgs::msg::PoseStamped::SharedPtr msg);
-
-    void object3PositionCallback(const visualization_msgs::msg::Marker::ConstSharedPtr msg);
-    void target3PositionCallback(const geometry_msgs::msg::PoseStamped::SharedPtr msg);
-
-    void publishAttachedObjectPose(); // 用于发布抓取后物体位姿的函数
-
-    // 核心MTC对象和ROS节点
     std::string task_name_;
     moveit::task_constructor::TaskPtr task_;
     rclcpp::Node::SharedPtr node_;
     pick_place_task_demo::Params params_;
 
-    // ROS通信接口
-    rclcpp::Subscription<octomap_msgs::msg::Octomap>::SharedPtr octomap_sub_;
-    rclcpp::Subscription<visualization_msgs::msg::Marker>::SharedPtr object1_position_sub_;
-    rclcpp::Subscription<geometry_msgs::msg::PoseStamped>::SharedPtr target1_position_sub_;
-    rclcpp::Subscription<visualization_msgs::msg::Marker>::SharedPtr object2_position_sub_;
-    rclcpp::Subscription<geometry_msgs::msg::PoseStamped>::SharedPtr target2_position_sub_;
-    rclcpp::Subscription<visualization_msgs::msg::Marker>::SharedPtr object3_position_sub_;
-    rclcpp::Subscription<geometry_msgs::msg::PoseStamped>::SharedPtr target3_position_sub_;
-    rclcpp::TimerBase::SharedPtr pose_update_timer_;
-
-    // 存储从话题接收的数据
-    geometry_msgs::msg::Pose object1_position_;
-    geometry_msgs::msg::Vector3 object1_scale_;
-    geometry_msgs::msg::Pose target1_pose_;
-    double object_height_ = 0.1;  // Default height, can be updated from marker
-
-    geometry_msgs::msg::Pose object2_position_;
-    geometry_msgs::msg::Vector3 object2_scale_;
-    geometry_msgs::msg::Pose target2_pose_;
-
-    geometry_msgs::msg::Pose object3_position_;
-    geometry_msgs::msg::Vector3 object3_scale_;
-    geometry_msgs::msg::Pose target3_pose_;
-
-    // 线程安全的状态标志位
-    std::atomic<bool> received_octomap_{false};
-    std::atomic<bool> received_object1_position_{false};
-    std::atomic<bool> received_target1_pose_{false};
-    std::atomic<bool> received_object2_position_{false};
-    std::atomic<bool> received_target2_pose_{false};
-    std::atomic<bool> received_object3_position_{false};
-    std::atomic<bool> received_target3_pose_{false};
-
-    // 帮助对象
-    planning_scene_monitor::PlanningSceneMonitorPtr scene_monitor_;
-    std::shared_ptr<tf2_ros::Buffer> tf_buffer_;
-    std::shared_ptr<tf2_ros::TransformListener> tf_listener_;
+    std::mutex mutex_;  // guards objects_ data written by the subscription callbacks
+    std::map<std::string, ObjectData> objects_;
 };
 
 } // namespace mtc_dynamic

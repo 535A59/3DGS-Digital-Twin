@@ -1,0 +1,22 @@
+# MoveIt -> Isaac Sim 6.1 in-process ros2_control (isaacsim.ros2.control, simulation/isaac/franka_controllers.yaml).
+# Both controllers are JointTrajectoryControllers (no GripperActionController is bundled in Isaac 6.1),
+# so the hand is FollowJointTrajectory too.
+trajectory_execution:
+  allowed_execution_duration_scaling: 2.0   # sim may run slower than real time
+  allowed_goal_duration_margin: 1.0
+  allowed_start_tolerance: 0.02             # a squeezed finger stops short of its planned close value
+
+moveit_controller_manager: moveit_simple_controller_manager/MoveItSimpleControllerManager
+
+moveit_simple_controller_manager:
+  controller_names: [panda_arm_controller, panda_hand_controller]
+  panda_arm_controller:
+    type: FollowJointTrajectory
+    action_ns: follow_joint_trajectory
+    default: true
+    joints: [panda_joint1, panda_joint2, panda_joint3, panda_joint4, panda_joint5, panda_joint6, panda_joint7]
+  panda_hand_controller:
+    type: FollowJointTrajectory
+    action_ns: follow_joint_trajectory
+    default: true
+    joints: [panda_finger_joint1]

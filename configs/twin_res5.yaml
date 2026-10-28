@@ -1,0 +1,112 @@
+# ============================================================
+# Isaac Sim digital twin — sim asset export, RES5 / Unity demo scene
+# ============================================================
+#   python -m src.sim_export.export --config configs/twin_res5.yaml
+#
+# World W = robot base panda_link0, Z-up, metres.  All lengths in this file are
+# metres unless marked "units" (= source-PLY reconstruction units).
+
+out_dir:   output/twin_res5
+data_root: old_code-data/3dgs_resource          # relative paths below resolve against this
+
+# ----------------------------------------------------------
+# Calibration  T_W_src: p_W = s * R (p_src - p0)
+# ----------------------------------------------------------
+# Unity calibration (GSTestScene.unity, world2 subtree): source PLY -> fr3 base,
+# uniform scale 2.27.  p0 (robot base in the source frame) and the rotation are
+# kept; R gets a minimal tilt so the RANSAC table normal is exactly +Z.
+unity_T_base_from_source:
+  - [-1.5256077,  0.8935006, -1.4237548, 1.189]
+  - [ 1.6808875,  0.8038727, -1.2966518, 1.117]
+  - [-0.0061857, -1.9257065, -1.2018803, 0.660]
+  - [ 0.0,        0.0,        0.0,       1.0  ]
+
+# Metric scale s (m per unit) replacing Unity's 2.27 (which makes the 2.5 cm
+# cube ~3.3 cm wide and the SPAM can 14 cm long).  Evidence (horizontal extents;
+# vertical extents of small objects are stretched by the reconstruction):
+scale_m_per_unit: 1.75
+calibration_notes:
+  - "anchor: cube (paper: 2.5 cm) horizontal edge 0.0138-0.0150 units (histogram extents of opaque splats in the cube-aligned frame) -> s = 1.67-1.81; chosen s = 1.75 -> 2.5 cm"
+  - "SPAM can (sanity, ~10.2 x 5.8 x 8.3 cm): 0.0621 x 0.0290 x 0.052 units -> s = 1.64 (length), 2.0 (width), 1.60 (height); at s=1.75: 10.9 x 5.1 x 9.1 cm"
+  - "FR3/Panda link0 (0.2256 x 0.1893 x 0.14 m) vs 3dgs/RES5/arm.ply: free scale/yaw/translation chamfer fit -> s = 1.90-1.97 (median 6.1-6.3 mm, yaw -3..-6 deg, origin offset 1.2 cm from p0); at s=1.75 the arm splats are ~10% smaller than link0"
+  - "small objects are stretched vertically by the reconstruction (cube 0.023 units tall vs 0.0144 wide); collision meshes at s=1.75 (oriented): box 6.0 x 11.2 x 9.3 cm, cube 2.7 x 3.2 x 3.4 cm, hammer 14.6 x 9.0 x 3.2 cm"
+  - "Unity 2.27 was tuned on the robot base visually; the original MoveIt meshes used 2.27 x 0.7 = 1.59"
+
+# ----------------------------------------------------------
+# Inputs
+# ----------------------------------------------------------
+background_asset: GSreal2sim2real/Assets/GaussianAssets/background-copy-cl.asset   # decoded with tools/unity_gs_to_ply.py
+arm_ply:          3dgs/RES5/arm.ply            # robot-base splats, calibration check only
+
+# Execution order of the MTC task (paper: box -> cardboard, cube -> box, hammer -> frame).
+# target.support: table | cardboard (xy = Unity target `target.unity`) | <earlier object> (stacked on its target)
+objects:
+  - name: box       # paper's "blue box" = the (open) SPAM can
+    ply: mesh_source/object1-copy.ply
+    mass_kg: 0.15
+    approximation: convexHull     # open can: the hull acts as a lid so the cube can rest on top (paper task)
+    flat_bottom: 0.010            # reconstructed bottom is rounded / off-centre: without this the hull rests tilted ~9 deg
+    target: {unity: box, support: cardboard}
+  - name: cube
+    ply: mesh_source/object3-copy.ply
+    mass_kg: 0.01
+    grip_from_top: 0.5            # grip at mid-height
+    target: {support: box}
+  - name: hammer
+    ply: mesh_source/object2-copy.ply
+    mass_kg: 0.12
+    target: {unity: hammer, support: table}
+
+meshing:            # repo refinement: filter -> DBSCAN clean -> alpha shape (center_the_cloud / transform_coords always False)
+  min_alpha:       0.2    # opacity filter (also the mesher's min_opacity)
+  max_scale:       0.01   # drop Gaussians whose largest axis is longer
+  dbscan_eps:      0.008
+  dbscan_min_samples: 5
+  white_threshold: 0.75   # drop near-white Gaussians (all RGB above) = white-table bleed
+  alpha:           0.015  # alpha-shape radius
+  nb_neighbors:    30     # statistical outlier removal
+  std_ratio:       1.0
+  hull_ratio:   1.25    # convexHull if hull volume / mesh volume <= this, else convexDecomposition
+  max_convex_hulls: 16
+  lift:         0.001   # lowest mesh point this far above its support (bleed below the table is cut first)
+
+# Unity scene poses in the fr3 base frame at Unity's scale 2.27 (scene.json, isaac_derived);
+# mapped into W through the source frame.
+unity_targets_base:
+  box:    [0.459655, 0.073065, 0.161423]       # target_box (== target_cube in Unity)
+  hammer: [0.598733, 0.551233, -0.002574]      # target_hammer (inside the tape frame)
+unity_camera_base:                             # Main Camera
+  position: [2.191, -0.065, 1.503]
+  forward:  [-0.8793356, 0.0851992, -0.4685195]
+  up:       [-0.4691767, 0.0133851, 0.8830029]
+  vertical_fov_deg: 39.1
+top_camera_height: 1.6                         # top-down camera, above the workspace centre
+
+# ----------------------------------------------------------
+# Static colliders (from the background splats, in W)
+# ----------------------------------------------------------
+table:
+  ransac_threshold: 0.005   # plane inlier distance
+  thickness: 0.02           # box collider below the table top
+cardboard:
+  z_band: [0.03, 0.40]      # height above the table
+  search_radius: 0.5        # around the Unity box target
+  dbscan_eps: 0.015
+  dbscan_min_samples: 20
+  top_percentile: 99        # cardboard top = this percentile of cluster z (drops floaters)
+  flat_top: 0.005           # splats this close below the top are snapped onto it: a flat lid, not a facet mosaic
+
+placement_clearance: 0.002  # target poses: object bottom this far above its support
+
+# ----------------------------------------------------------
+# MTC grasp parameters (mtc_task.yaml)
+# ----------------------------------------------------------
+mtc:
+  task_timeout: 180.0
+  approach: [0.05, 0.15]    # min / max distance
+  lift:     [0.05, 0.15]
+  finger_margin: 0.004      # finger_close = grasp width / 2 - this
+  slab_half_width: 0.01     # finger pads ~2 cm wide: grasp width = cross-section within +-this of the TCP
+  tip_clearance: 0.016      # TCP at least this far above the object bottom (fingertips end ~13 mm below the TCP)
+  max_open_width: 0.07      # MTC "open" = 0.035 per finger
+  hand_clearance: 0.01      # grasp yaw: hand footprint (Panda hand 6.4 x 20.8 cm) this far from the cardboard at rest and target
