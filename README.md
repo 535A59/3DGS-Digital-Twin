@@ -1,14 +1,16 @@
-# 3DGS Digital Twin
+# 3DGS Digital Twin — Isaac Sim version
 
-A high-fidelity digital twin framework for robotic manipulation, built on **3D Gaussian Splatting (3DGS)**. This repository implements the full perception-to-planning-to-execution pipeline described in:
+A high-fidelity digital twin framework for robotic manipulation, built on **3D Gaussian Splatting (3DGS)**. This repository implements the perception-to-planning-to-execution pipeline described in:
 
 > **"A High-Fidelity Digital Twin for Robotic Manipulation Based on 3D Gaussian Splatting"**
+
+This branch (`issacsim-version`) runs the digital twin in **NVIDIA Isaac Sim 6.1** instead of Unity. The 3DGS reconstruction is rendered as the visual layer, the collision meshes from the pipeline become invisible PhysX rigid bodies, and a Franka Panda performs closed-loop pick and place through ROS 2, MoveIt 2 and MoveIt Task Constructor (MTC). The reconstruction pipeline (Steps 0–3) is the same as on `main`.
+
+![Isaac Sim twin, run I: box → cardboard box, cube → box, hammer → frame](docs/images/isaac_twin_runI.jpg)
 
 ---
 
 ## Overview
-
-The system reconstructs photorealistic, collision-ready digital twins from sparse RGB images in minutes, enabling zero-shot pick-and-place planning on real robots.
 
 ```
 Sparse RGB Images
@@ -36,12 +38,19 @@ Sparse RGB Images
 │  Step 3b · DBSCAN   │  ← Connectivity pruning
 │  Step 3c · Mesh     │  ← Alpha Shapes → .obj
 └─────────────────────┘
-       │  object.obj (collision mesh)
+       │  object.ply (splats) + object.obj (collision mesh)
        ▼
 ┌─────────────────────┐
-│  Unity Simulation   │  ← MeshCollider + Rigidbody
-│  + ROS 2 / MoveIt 2 │     collision-aware planning
+│  Sim export         │  ← metric scale, robot-base frame,
+│  (src/sim_export)   │     colliders, targets, MTC task file
 └─────────────────────┘
+       │  output/twin_res5/
+       ▼
+┌─────────────────────┐        ROS 2         ┌──────────────────────┐
+│  Isaac Sim 6.1      │  ◄─────────────────► │  MoveIt 2 + MTC      │
+│  splats + PhysX     │  joint trajectories, │  (mtc_dynamic)       │
+│  ros2_control       │  object poses        │  pick-and-place plan │
+└─────────────────────┘                      └──────────────────────┘
 ```
 
 ---
@@ -50,10 +59,10 @@ Sparse RGB Images
 
 ```
 3DGS-Digital-Twin/
-├── pipeline.py                   # End-to-end orchestration script
+├── pipeline.py                   # Steps 1–3 orchestration
 ├── requirements.txt
 ├── configs/
-│   ├── default.yaml              # All tuneable parameters
+│   ├── default.yaml              # Reconstruction pipeline parameters
 │   └── twin_res5.yaml            # Isaac twin export: calibration, objects, targets
 ├── src/
 │   ├── semantic_segmentation/
@@ -63,59 +72,169 @@ Sparse RGB Images
 │   ├── geometry_refinement/
 │   │   ├── filter.py             # Opacity + scale attribute filtering
 │   │   ├── dbscan_clean.py       # DBSCAN connectivity pruning / splitting
-│   │   └── meshing.py            # Alpha Shapes watertight meshing
+│   │   └── meshing.py            # Alpha Shapes meshing
 │   └── sim_export/
 │       └── export.py             # 3DGS scene → Isaac Sim assets + MTC task file
 ├── tools/
 │   └── unity_gs_to_ply.py        # Unity GaussianSplatting .asset → 3DGS PLY
-├── ros2_ws/
-│   └── mtc_controller_final/     # MoveIt 2 Task Constructor ROS 2 package
 ├── simulation/
-│   ├── isaac/                    # Isaac Sim 6.1 scene, runtime, report
-│   ├── Scripts/                  # Unity C# scripts (see below)
-│   └── Scenes/                   # Unity scene files
-├── docker/moveit/                # ROS 2 Jazzy + MoveIt 2 + MTC image for the twin
-├── scripts/run_twin_demo.sh      # Isaac twin end-to-end demo
+│   └── isaac/                    # Isaac Sim scene, runtime, run report
+├── ros2_ws/
+│   └── mtc_controller_final/     # mtc_dynamic: MoveIt 2 Task Constructor ROS 2 package
+├── docker/
+│   └── moveit/                   # ROS 2 Jazzy + MoveIt 2 + MTC image
+├── scripts/
+│   └── run_twin_demo.sh          # End-to-end twin demo
 ├── tests/                        # Self-checks (python -m tests.<name>)
-├── docs/isaac_twin_contract.md   # Isaac twin frames, file formats, ROS interface
+├── docs/
+│   └── isaac_twin_contract.md    # Twin frames, file formats, ROS interface
 ├── external/
 │   ├── InstantSplat/             # 3DGS reconstruction (submodule)
-│   ├── UnityGaussianSplatting/   # Unity 3DGS renderer (submodule)
-│   └── ros2-for-unity/           # ROS2ForUnity plugin (submodule)
+│   ├── UnityGaussianSplatting/   # Unity 3DGS renderer (submodule, original Unity runtime)
+│   └── ros2-for-unity/           # ROS2ForUnity plugin (submodule, original Unity runtime)
 └── data/
     └── real_env_video.mp4        # Sample real-robot environment video
 ```
 
 ---
 
-## Quick Start
-
-### 1. Clone (with submodules)
+## Installation
 
 ```bash
-git clone --recurse-submodules https://github.com/your-username/3DGS-Digital-Twin.git
+git clone -b issacsim-version https://github.com/535A59/3DGS-Digital-Twin.git
 cd 3DGS-Digital-Twin
+
+# Only needed for 3DGS reconstruction (Step 0):
+git submodule update --init external/InstantSplat
+
+pip install -r requirements.txt
 ```
 
-### 2. Install Python dependencies
+Segmentation (Step 1) also needs SAM:
 
 ```bash
-pip install -r requirements.txt
-
-# Install SAM separately:
 pip install git+https://github.com/facebookresearch/segment-anything.git
-
-# Download SAM ViT-H weights:
 wget https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth
 ```
 
-### 3. Reconstruct with InstantSplat (Step 0)
+The Isaac twin additionally needs Docker with an NVIDIA GPU and the
+`nvcr.io/nvidia/isaac-sim:6.1.0` image from NGC. The MoveIt image is built from
+`docker/moveit/Dockerfile` (on top of `ros:jazzy`) the first time it is used. No ROS
+installation on the host is required.
+
+---
+
+## Isaac Sim Digital Twin
+
+The demo reproduces the paper's pick-and-place task (Sec. 4.1.1) on the RES5 scene:
+**box → on the cardboard box, cube → on the placed box, hammer → into the tape frame**.
+
+- **Visuals.** Each object's 3DGS splats are parented to its rigid body and move with it; the background
+  splats are static.
+- **Physics.** The collision meshes from `src/geometry_refinement` are invisible PhysX colliders with gravity
+  and contact. Grasps are physical: the fingers hold the object by friction, nothing is attached.
+- **Control.** The Franka runs on `isaacsim.ros2.control` inside Isaac Sim. MoveIt 2 + MTC run in a second
+  container, read the live object poses Isaac publishes and send joint trajectories back.
+- **Frames.** World frame = robot base `panda_link0`, Z-up, metres. The full interface (frames, file formats,
+  ROS topics) is in [docs/isaac_twin_contract.md](docs/isaac_twin_contract.md).
+
+### Input data
+
+The twin is built from the RES5 reconstruction, which is not distributed with the repository.
+`configs/twin_res5.yaml` reads it from `data_root` (default `old_code-data/3dgs_resource/`):
+
+| File | Used for |
+|------|----------|
+| `mesh_source/object{1,2,3}-copy.ply` | Segmented object splats (box, hammer, cube) |
+| `GSreal2sim2real/Assets/GaussianAssets/background-copy-cl.*` | Background (table, cardboard box, frame), decoded with `tools/unity_gs_to_ply.py` |
+| `3dgs/RES5/arm.ply` | Robot-base splats, calibration check only |
+
+### Run
+
+```bash
+# export -> Isaac Sim -> MoveIt/MTC -> recording + report, about 2.5 min
+ROS_DOMAIN_ID=64 PYTHON=python3 scripts/run_twin_demo.sh
+
+# the two recorded cameras side by side (scene camera | top view)
+ffmpeg -i output/twin_res5/recording/unity_main.mp4 -i output/twin_res5/recording/top.mp4 \
+    -filter_complex hstack -c:v libx264 -pix_fmt yuv420p output/twin_res5/side_by_side.mp4
+```
+
+`ROS_DOMAIN_ID` must be set and non-zero; the scripts refuse domain 0. Outputs go to `output/twin_res5/`:
+
+| Output | Content |
+|--------|---------|
+| `manifest.json`, `collision/`, `splats/`, `usd/` | Exported scene |
+| `mtc_task.yaml` | Task parameters for `mtc_dynamic` |
+| `isaac.log`, `mtc.log` | Logs of both containers |
+| `recording/{unity_main,top}.mp4` | Recorded cameras (10 fps) |
+| `final_state.json`, `body_poses.json` | Final poses, contacts, pose history |
+| `report.json` | Per-object placement error, tilt, support and success |
+
+Each stage can also run on its own:
+
+```bash
+python -m src.sim_export.export --config configs/twin_res5.yaml               # assets + mtc_task.yaml
+ROS_DOMAIN_ID=64 simulation/isaac/run_isaac.sh --seconds 600                  # Isaac Sim container
+ROS_DOMAIN_ID=64 docker/moveit/run_mtc.sh $PWD/output/twin_res5/mtc_task.yaml # MoveIt + MTC container
+python simulation/isaac/twin_report.py --out_dir output/twin_res5 --config configs/twin_res5.yaml
+```
+
+A physics and rendering check without ROS: `ROS_DOMAIN_ID=64 simulation/isaac/run_isaac.sh --no_ros --drop 0.05 --seconds 4`.
+
+### Calibration
+
+`configs/twin_res5.yaml` keeps the robot-base position and rotation of the paper's Unity alignment, levels
+the table to +Z, and replaces Unity's scale of 2.27 with a metric 1.75 m/unit, anchored on the 2.5 cm cube.
+The supporting measurements are listed under `calibration_notes` in that file.
+
+### Simulation settings beyond the paper
+
+These were added to make the simulation stable; they are not part of the paper's method:
+
+- a torsional friction patch on the object colliders;
+- each body's origin and centre of mass at its collider centroid, assuming uniform density;
+- the cardboard lid (5 mm) and the box bottom (10 mm) flattened;
+- masses: box 0.15 kg, cube 0.01 kg, hammer 0.12 kg;
+- a raised finger drive force.
+
+### Results
+
+Three consecutive full runs on an NVIDIA GB10 (aarch64), each with physical grasps and no unexpected contacts.
+Values are the horizontal error to the target and the final tilt. Pass thresholds: 30 mm horizontal,
+15 mm vertical, 15° tilt.
+
+| Run | box → cardboard | cube → box | hammer → frame |
+|-----|-----------------|------------|----------------|
+| I | 6.6 mm, 0° | 1.4 mm, 2.2° | 3.2 mm |
+| J | 5.5 mm, 0° | 1.6 mm, 2.2° | 3.5 mm |
+| K | 2.4 mm, 0° | 1.0 mm, 2.2° | 3.3 mm |
+
+### Known limitations
+
+- The cube ends 5–6 mm low with a 2.2° tilt, and the box can rotate up to about 5.7° in the gripper.
+- The hammer is judged by the 30 mm horizontal tolerance, not by the frame outline.
+- `move_group` segfaults at shutdown, after "Execution complete"; this does not affect the run.
+- `launch/run.launch.py` (the Unity entry point) still uses the old `panda_config.yaml` parameters.
+
+### Self-checks
+
+```bash
+python -m tests.test_sim_export    # the last two checks need the RES5 input data
+python -m tests.test_twin_report
+```
+
+---
+
+## Reconstruction Pipeline (Steps 0–3)
+
+### 1. Reconstruct with InstantSplat (Step 0)
 
 Follow the [InstantSplat README](external/InstantSplat/README.md) to reconstruct a scene from sparse RGB images. This produces:
 - `point_cloud.ply` — 3DGS Gaussian point cloud
 - `cameras.json`    — Calibrated camera parameters
 
-### 4. Configure the pipeline
+### 2. Configure the pipeline
 
 Copy `configs/default.yaml` and fill in your paths:
 
@@ -129,7 +248,7 @@ object_name:  hammer
 sam_checkpoint: sam_vit_h_4b8939.pth
 ```
 
-### 5. Run the full pipeline
+### 3. Run the full pipeline
 
 ```bash
 python pipeline.py --config configs/default.yaml
@@ -141,7 +260,7 @@ This runs all three steps and saves:
 - `output/refined/hammer_clean.ply`    — After DBSCAN pruning
 - `output/refined/hammer.obj`          — Final collision mesh
 
-### 6. Run individual steps
+### 4. Run individual steps
 
 ```bash
 # Step 1 only (interactive segmentation window will open):
@@ -227,119 +346,67 @@ python -m src.geometry_refinement.meshing \
     --alpha  0.01
 ```
 
----
+The CLI keeps the mesh in the frame of the input PLY (`pipeline.py` centres it, as set in
+`configs/default.yaml`). Every mesh gets a `<mesh>.json` sidecar with the centring offset, so it
+can be put back into the splat frame. `transform_coords` is the legacy Unity axis swap; it is a
+mirror (det −1) and must not be used for Isaac Sim or ROS.
 
-## ROS 2 / MoveIt 2 Integration
+### `src/sim_export`
 
-The `ros2_ws/mtc_controller_final/` package implements collision-aware motion planning using MoveIt 2 Task Constructor (MTC).
+Builds the Isaac Sim asset folder (`manifest.json`, splats, body-frame collision meshes,
+static colliders, targets, camera, `mtc_task.yaml`) from an export config:
 
 ```bash
-cd ros2_ws/mtc_controller_final
-colcon build
-source install/setup.bash
-
-# Launch planning scene + demo:
-ros2 launch mtc_dynamic demo.launch.py
-
-# Run pick-and-place with mesh collision object:
-ros2 launch mtc_dynamic run.launch.py
+python -m src.sim_export.export --config configs/twin_res5.yaml [--out_dir output/twin_res5]
 ```
 
-The generated `.obj` mesh can be loaded as a `CollisionObject` in MoveIt 2's planning scene. See `ros2_ws/mtc_controller_final/src/scripts/` for utility scripts.
+### `tools/unity_gs_to_ply.py`
+
+Decodes a UnityGaussianSplatting `.asset` back into a 3DGS PLY. The rotation field of the
+original assets is corrupted; the decoder repairs it (median error about 20–25°).
+
+```bash
+python tools/unity_gs_to_ply.py \
+    --asset  .../GaussianAssets/background-copy-cl.asset \
+    --output /path/to/background.ply
+```
 
 ---
 
-## Unity Simulation
+## ROS 2 / MoveIt 2 (`mtc_dynamic`)
 
-The collision mesh is imported into Unity alongside the [UnityGaussianSplatting](external/UnityGaussianSplatting/) renderer for visual fidelity:
+`ros2_ws/mtc_controller_final/` contains the `mtc_dynamic` package, which plans collision-aware
+pick and place with MoveIt 2 Task Constructor. On this branch it targets **ROS 2 Jazzy / MoveIt 2.12**:
+
+- The task is an ordered list of objects read from parameters: mesh, pose and target topics,
+  grasp offset and yaw, finger closing width, and approach and lift ranges. The export generates
+  them as `mtc_task.yaml`; an example is in `config/twin_task.example.yaml`.
+- Static obstacles (table, cardboard box) are loaded as mesh collision objects.
+- The object pose is re-read before each pick, so each pick plans from the object's current pose.
+
+It is built inside the MoveIt image; `docker/moveit/run_mtc.sh` builds the image and runs:
+
+```bash
+ros2 launch mtc_dynamic isaac.launch.py task:=/abs/path/output/twin_res5/mtc_task.yaml
+```
+
+`isaac.launch.py` starts `robot_state_publisher`, `move_group` and the controller spawners for Isaac's
+`controller_manager`, then `pick_place_demo`, all on sim time. The original entry points
+(`demo.launch.py`, `run.launch.py`) are still in `launch/`.
+
+---
+
+## Original Unity Runtime
+
+The paper's experiments used Unity with the [UnityGaussianSplatting](external/UnityGaussianSplatting/)
+renderer and [ROS2ForUnity](external/ros2-for-unity/):
 
 1. Import `object.obj` into a Unity project.
 2. Add a `MeshCollider` component (enable **Convex** for physics simulation).
 3. Add a `Rigidbody` component.
-4. Use the [ROS2ForUnity](external/ros2-for-unity/) plugin to bridge Unity ↔ ROS 2 for sensor simulation and command execution.
+4. Bridge Unity ↔ ROS 2 with ROS2ForUnity for sensor simulation and command execution.
 
----
-
-## Isaac Sim Digital Twin
-
-Isaac Sim 6.1 replaces the Unity runtime for the closed-loop pick-and-place demo (paper Sec. 4.1.1, the
-RES5 scene): **box → on the cardboard box, cube → on the placed box, hammer → into the tape frame**.
-
-- The 3DGS splats are what you see; the collision meshes from `src/geometry_refinement` are invisible PhysX
-  rigid bodies (gravity + contact). Each object's splats are parented to its rigid body and move with it.
-- The Franka runs on `isaacsim.ros2.control` inside Isaac. MoveIt 2 + MTC (`mtc_dynamic`) run in a second
-  container and plan against the live object poses Isaac publishes. Grasps are physical (friction only, no attach).
-- World frame = `panda_link0`, Z-up, metres. Frames, file formats and the ROS interface are in
-  [docs/isaac_twin_contract.md](docs/isaac_twin_contract.md).
-
-### Requirements
-
-- Docker with an NVIDIA GPU, the `nvcr.io/nvidia/isaac-sim:6.1.0` image (NGC), and network access for the
-  `ros:jazzy` build of `docker/moveit/Dockerfile` (`run_mtc.sh` builds it on first use).
-- Host Python with `requirements.txt` (numpy, scipy, scikit-learn, plyfile, open3d, opencv, PyYAML, trimesh).
-- Input data in `old_code-data/3dgs_resource/` (not in the repo): `mesh_source/object{1,2,3}-copy.ply`,
-  `GSreal2sim2real/Assets/GaussianAssets/background-copy-cl.*` and `3dgs/RES5/arm.ply`.
-
-### Run
-
-```bash
-# export -> Isaac Sim -> MoveIt/MTC -> recording + report, about 2.5 min
-ROS_DOMAIN_ID=64 PYTHON=python3 scripts/run_twin_demo.sh
-
-# the two recorded cameras side by side (Unity main camera | top view)
-ffmpeg -i output/twin_res5/recording/unity_main.mp4 -i output/twin_res5/recording/top.mp4 \
-    -filter_complex hstack -c:v libx264 -pix_fmt yuv420p output/twin_res5/side_by_side.mp4
-```
-
-`ROS_DOMAIN_ID` must be set and non-zero. Outputs in `output/twin_res5/` are `manifest.json`, `collision/`,
-`mtc_task.yaml`, `isaac.log`, `mtc.log`, `recording/{unity_main,top}.mp4`, `final_state.json` and `report.json`.
-
-The stages can also run on their own:
-
-```bash
-python -m src.sim_export.export --config configs/twin_res5.yaml               # assets + mtc_task.yaml
-ROS_DOMAIN_ID=64 simulation/isaac/run_isaac.sh --seconds 600                  # Isaac container
-ROS_DOMAIN_ID=64 docker/moveit/run_mtc.sh $PWD/output/twin_res5/mtc_task.yaml # MoveIt + MTC container
-python simulation/isaac/twin_report.py --out_dir output/twin_res5 --config configs/twin_res5.yaml
-```
-
-### Calibration and physics settings
-
-- `configs/twin_res5.yaml` keeps the robot base and rotation of the paper's Unity alignment, levels the
-  table to +Z and replaces Unity's scale 2.27 with 1.75 m/unit (the 2.5 cm cube as anchor). The evidence is
-  in `calibration_notes` there.
-- Added for a stable simulation (not part of the paper's method):
-  - a torsional friction patch on the object colliders;
-  - each body's origin and centre of mass at its collider centroid, with uniform density;
-  - the cardboard lid (5 mm) and the box bottom (10 mm) flattened;
-  - masses box 0.15 kg, cube 0.01 kg, hammer 0.12 kg;
-  - a raised finger drive force.
-
-### Results
-
-Three consecutive full runs, each with physical grasps and no unexpected contacts. Values are the horizontal
-error to the target and the final tilt. Pass thresholds: 30 mm horizontal, 15 mm vertical, 15° tilt.
-
-| Run | box → cardboard | cube → box | hammer → frame |
-|-----|-----------------|------------|----------------|
-| I | 6.6 mm, 0° | 1.4 mm, 2.2° | 3.2 mm |
-| J | 5.5 mm, 0° | 1.6 mm, 2.2° | 3.5 mm |
-| K | 2.4 mm, 0° | 1.0 mm, 2.2° | 3.3 mm |
-
-### Known limitations
-
-- The cube ends 5–6 mm low with a 2.2° tilt, and the box can rotate up to about 5.7° in the gripper.
-- The hammer is judged by the 30 mm horizontal tolerance, not by the frame outline.
-- `move_group` segfaults at shutdown, after "Execution complete"; this does not affect the run.
-- `launch/run.launch.py` (the Unity entry point) still uses the old `panda_config.yaml` parameters; the
-  twin uses `launch/isaac.launch.py`.
-
-### Self-checks
-
-```bash
-python -m tests.test_sim_export    # the last two checks need old_code-data/
-python -m tests.test_twin_report
-```
+The Unity project itself is not part of this branch.
 
 ---
 
@@ -355,6 +422,9 @@ python -m tests.test_twin_report
 | `dbscan.eps` | 0.01 | Higher → merge nearby clusters |
 | `meshing.alpha_value` | 0.01 | Higher → coarser / fewer holes in mesh |
 
+The Isaac twin's export parameters (scale, meshing, masses, grasp settings) are documented
+in `configs/twin_res5.yaml`.
+
 ---
 
 ## Performance (from paper)
@@ -362,7 +432,7 @@ python -m tests.test_twin_report
 | Metric | This system | NeRF baseline |
 |--------|------------|---------------|
 | Reconstruction time | ~229 s | ~1123 s |
-| PSNR | 37.03 dB | 29.14 dB |
+| PSNR | 37.03 dB | 28.33 dB |
 | SSIM | 0.9821 | 0.9037 |
 | Pick-and-place success | **90%** (9/10) | — |
 
@@ -376,3 +446,6 @@ This project builds on several open-source works:
 - [Segment Anything Model](https://github.com/facebookresearch/segment-anything) — Meta AI
 - [Open3D](https://github.com/isl-org/Open3D) — Intel ISL
 - [UnityGaussianSplatting](https://github.com/aras-p/UnityGaussianSplatting) — Aras Pranckevičius
+- [MoveIt 2](https://github.com/moveit/moveit2) and [MoveIt Task Constructor](https://github.com/moveit/moveit_task_constructor) — the MoveIt project
+
+NVIDIA Isaac Sim is used under its own license terms and is not redistributed here.
