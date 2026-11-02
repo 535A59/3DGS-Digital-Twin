@@ -28,8 +28,8 @@ Sparse RGB Images
        │  masks_json/
        ▼
 ┌─────────────────────┐
-│  Step 2 · Semantic  │  ← Multi-view voting + KNN
-│  Fusion             │     boundary refinement
+│  Step 2 · Semantic  │  ← Z-buffer visibility + depth-
+│  Fusion             │     gated consensus + KNN (×3)
 └─────────────────────┘
        │  object.ply
        ▼
@@ -68,13 +68,15 @@ Sparse RGB Images
 │   ├── semantic_segmentation/
 │   │   └── sam_segmentation.py   # Interactive SAM segmentation → JSON masks
 │   ├── semantic_fusion/
-│   │   └── fusion.py             # Multi-view voting + KNN 3D lifting
+│   │   └── fusion.py             # Visibility-aware, depth-gated 3D lifting (Sec. 3.2)
 │   ├── geometry_refinement/
 │   │   ├── filter.py             # Opacity + scale attribute filtering
 │   │   ├── dbscan_clean.py       # DBSCAN connectivity pruning / splitting
 │   │   └── meshing.py            # Alpha Shapes meshing
-│   └── sim_export/
-│       └── export.py             # 3DGS scene → Isaac Sim assets + MTC task file
+│   ├── sim_export/
+│   │   └── export.py             # 3DGS scene → Isaac Sim assets + MTC task file
+│   └── evaluation/
+│       └── metrics.py            # Table 4 consistency / ghost index, Table 5 geometry, mIoU
 ├── tools/
 │   └── unity_gs_to_ply.py        # Unity GaussianSplatting .asset → 3DGS PLY
 ├── simulation/
@@ -222,6 +224,7 @@ Values are the horizontal error to the target and the final tilt. Pass threshold
 ```bash
 python -m tests.test_sim_export    # the last two checks need the RES5 input data
 python -m tests.test_twin_report
+python -m tests.test_semantic_fusion
 ```
 
 ---
@@ -296,7 +299,37 @@ python -m src.semantic_segmentation.sam_segmentation \
 
 ### `src/semantic_fusion`
 
-Lifts 2D masks into 3D via multi-view voting and iterative KNN refinement.
+Lifts 2D masks into 3D (paper Sec. 3.2, Eqs. 2–3). For up to `max_iter` feedback iterations:
+
+1. **Visibility** — per view, a z-buffer of opaque Gaussians (`occluder_min_alpha`) on
+   `zbuf_cell`-pixel cells; a Gaussian is visible if within `visibility_tol` of the front surface → `V'_i`.
+2. **Depth clustering** — per view, 1-D DBSCAN (`eps_depth`, `min_samples`) on the depths of the
+   visible in-mask Gaussians. Primary cluster → `w_cluster = 1`; detached points decay as
+   `exp(-½ (gap / eps_depth)²)` → `W_ij`.
+3. **Consensus** — object iff `Σ_j W_ij · 1[(u,v) ∈ M_j] ≥ |V'_i| / κ` (κ = 1.5).
+4. **KNN boundary refinement.**
+5. **Feedback** — in-mask Gaussians rejected by the depth gate are dropped from the next
+   iteration's z-buffer, and the primary depth cluster is chosen by overlap with the current 3D labels.
+
+Synthetic self-checks: `python -m tests.test_semantic_fusion`.
+
+**Surfaces never observed.** Fusion only labels Gaussians that some view sees, so an object's
+underside resting on the table and the tabletop patch beneath it get no observations. They are
+not reconstructed or inpainted; they are closed at the mesh level with a support-plane prior:
+
+- *Object underside* — the Alpha Shapes mesh closes the open bottom with the hull of the observed
+  points. In the Isaac export (`body_from_mesh` in `src/sim_export/export.py`), vertices below the
+  RANSAC table plane (splat bleed) are clamped to it, the lowest `flat_bottom` band is flattened onto
+  one base plane, and the collider is the convex hull (or a convex decomposition when hull / mesh
+  volume > `hull_ratio`), so the hidden bottom becomes a flat face lying on the table.
+- *Tabletop under the object* — the table is a RANSAC plane fitted to the background splats and
+  modelled as a box collider of `table.thickness` below that plane (`table_collider`), so the
+  occluded patch is filled by the plane. The cardboard box is closed the same way: hull of its
+  splat cluster extruded down to the table plane (`cardboard_collider`).
+
+This is a planar-contact assumption, not an observation: it holds for objects resting flat on the
+table and is checked indirectly by the objects settling upright in simulation and by the
+pick-and-place success, not by a separate geometric metric on the hidden surfaces.
 
 ```bash
 python -m src.semantic_fusion.fusion \
@@ -350,6 +383,26 @@ The CLI keeps the mesh in the frame of the input PLY (`pipeline.py` centres it, 
 `configs/default.yaml`). Every mesh gets a `<mesh>.json` sidecar with the centring offset, so it
 can be put back into the splat frame. `transform_coords` is the legacy Unity axis swap; it is a
 mirror (det −1) and must not be used for Isaac Sim or ROS.
+
+### `src/evaluation`
+
+```bash
+# Table 4: consistency / ghost index sweep (every κ reruns the full feedback + KNN pipeline)
+python -m src.evaluation.metrics table4 \
+    --ply point_cloud.ply --cameras_json cameras.json \
+    --images_dir images/ --mask_dir masks_json/ --kappas 2.0,1.8,1.5,1.2,1.0
+
+# Table 5: Chamfer / precision / recall / F1 vs. a manually cleaned GT cloud
+python -m src.evaluation.metrics geometry --pred refined/hammer_clean.ply --gt gt/hammer.ply
+
+# 2D mIoU of the projected 3D segmentation vs. annotated GT masks (same JSON format)
+python -m src.evaluation.metrics miou --scene_ply point_cloud.ply \
+    --object_ply segmented/hammer.ply --cameras_json cameras.json \
+    --images_dir images/ --gt_mask_dir gt_masks_json/
+```
+
+Metric definitions (including the Ghost Index reference threshold) are in the
+[metrics.py](src/evaluation/metrics.py) docstring.
 
 ### `src/sim_export`
 
@@ -414,7 +467,10 @@ The Unity project itself is not part of this branch.
 
 | Parameter | Default | Effect |
 |-----------|---------|--------|
-| `vote_fraction` | 0.5 | Lower → more permissive object mask |
+| `kappa` | 1.5 | Higher → more permissive object mask (τ = visible views / κ) |
+| `eps_depth` | 0.02 | Depth gap (m) separating object from bleeding background |
+| `min_samples` | 10 | Minimum depth-cluster size |
+| `visibility_tol` | 0.02 | Depth slack (m) for the z-buffer test |
 | `knn_k` | 15 | Higher → smoother boundary |
 | `knn_threshold` | 0.6 | Lower → more boundary updates |
 | `filter.min_alpha` | 0.05 | Lower → keep more transparent Gaussians |

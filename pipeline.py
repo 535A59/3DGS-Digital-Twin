@@ -5,7 +5,7 @@ Orchestrates the full reconstruction-to-collision workflow:
 
     Step 0 (external)  InstantSplat 3DGS reconstruction
     Step 1             Semantic segmentation  (SAM interactive masks → JSON)
-    Step 2             Semantic fusion        (multi-view voting + KNN lifting)
+    Step 2             Semantic fusion        (visibility + depth-gated consensus)
     Step 3a            Geometry filter        (opacity + scale pruning)
     Step 3b            DBSCAN clean           (connectivity pruning)
     Step 3c            Watertight meshing     (Alpha Shapes → .obj)
@@ -84,7 +84,12 @@ def step2_fuse(cfg: dict) -> str:
         mask_dir=cfg["mask_dir"],
         out_dir=out_dir,
         object_name=cfg.get("object_name", "object"),
-        vote_fraction=seg_cfg.get("vote_fraction", 0.5),
+        kappa=seg_cfg.get("kappa", 1.5),
+        eps_depth=seg_cfg.get("eps_depth", 0.02),
+        min_samples=seg_cfg.get("min_samples", 10),
+        visibility_tol=seg_cfg.get("visibility_tol", 0.02),
+        zbuf_cell=seg_cfg.get("zbuf_cell", 4),
+        occluder_min_alpha=seg_cfg.get("occluder_min_alpha", 0.1),
         max_iter=seg_cfg.get("max_iter", 3),
         knn_k=seg_cfg.get("knn_k", 15),
         knn_threshold=seg_cfg.get("knn_threshold", 0.6),
