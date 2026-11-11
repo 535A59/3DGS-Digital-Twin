@@ -14,13 +14,13 @@ Consistency(p)  = N_fg(p) / N(p), with N(p) the views where p projects inside
                   is in the mask.  Reported: % of evaluated points with
                   N(p) > 0 and Consistency(p) >= 0.8.  Evaluated on the
                   foreground points retained at each κ.
-Ghost Index(κ)  = 100 · (|FG(κ_ref)| − |FG(κ)|) / N_total, i.e. the increase
-                  in foreground points when relaxing the threshold from κ to
-                  the reference κ_ref, normalised by the total point count.
-                  κ_ref defaults to inf (naive projection: any positive
-                  weighted vote).  Every κ, including the reference, reruns the
-                  full depth-feedback + KNN pipeline.  This counts points
-                  dropped by tightening, genuine or not.
+Ghost Index(κ)  = residue of the object left in the background after
+                  segmentation.  Per view, z-buffer all points per pixel; among
+                  mask pixels hit by a point, the % whose front-most point is
+                  NOT foreground at κ.  Averaged over views.  A strict κ drops
+                  object points into the background, where they remain "in
+                  place" as a ghost of the object (cf. the residual shadow in
+                  background renders).  Points only, no rasterisation.
 Artefact rate   (needs --gt) % of foreground points farther than δ from the
                   manually cleaned GT cloud — the GT-grounded ghost measure.
 GT recall       (needs --gt) % of GT points with a foreground point within δ.
@@ -78,9 +78,25 @@ def projection_consistency(
     return 100.0 * float(np.mean(n_fg[valid] / n_valid[valid] >= min_score))
 
 
-def ghost_index(n_fg: int, n_fg_ref: int, n_total: int) -> float:
-    """100 · (|FG(κ_ref)| − |FG(κ)|) / N_total."""
-    return 100.0 * (n_fg_ref - n_fg) / n_total
+def ghost_index(
+    pts_xyz: np.ndarray,
+    fg: np.ndarray,
+    cameras: list[dict],
+    masks: list[np.ndarray],
+) -> float:
+    """% of in-mask pixels whose front-most point is background (view mean)."""
+    per_view = []
+    for cam, mask in zip(cameras, masks):
+        uv, z = project(pts_xyz, cam["K"], cam["RT"])
+        idx = np.flatnonzero(in_view(uv, z, cam["shape"]))
+        idx = idx[mask[uv[idx, 1], uv[idx, 0]]]
+        if not len(idx):
+            continue
+        pix = uv[idx, 1] * cam["shape"][1] + uv[idx, 0]
+        order = np.lexsort((z[idx], pix))
+        first = np.r_[True, pix[order][1:] != pix[order][:-1]]
+        per_view.append(100.0 * float(np.mean(~fg[idx[order][first]])))
+    return float(np.mean(per_view)) if per_view else float("nan")
 
 
 def table4(
@@ -89,7 +105,6 @@ def table4(
     images_dir: str,
     mask_dir: str,
     kappas: list[float],
-    ref_kappa: float = float("inf"),
     gt_xyz: np.ndarray | None = None,
     delta: float = 0.005,
     **fusion_kwargs,
@@ -105,17 +120,15 @@ def table4(
         return lift_labels(xyz, cameras, masks, occluders, kappa=k, **fusion_kwargs)[0]
 
     gt_tree = None if gt_xyz is None else cKDTree(gt_xyz)
-    n_ref = int(run(ref_kappa).sum())
     rows = []
     for k in kappas:
         fg = run(k)
         rows.append(dict(
             kappa=k,
             n_fg=int(fg.sum()),
-            n_fg_ref=n_ref,
             n_total=len(xyz),
             consistency=projection_consistency(xyz[fg], cameras, masks),
-            ghost_index=ghost_index(int(fg.sum()), n_ref, len(xyz)),
+            ghost_index=ghost_index(xyz, fg, cameras, masks),
         ))
         if gt_tree is not None:
             d_fg, _ = gt_tree.query(xyz[fg])
@@ -209,8 +222,6 @@ def _parse_args():
     t4.add_argument("--images_dir", required=True)
     t4.add_argument("--mask_dir", required=True)
     t4.add_argument("--kappas", default="2.0,1.8,1.5,1.2,1.0")
-    t4.add_argument("--ref_kappa", type=float, default=float("inf"),
-                    help="Relaxed reference for Ghost Index (default: inf = naive projection)")
     t4.add_argument("--max_iter", type=int, default=3)
     t4.add_argument("--gt", help="Manually cleaned GT cloud (.ply) → artefact rate + GT recall")
     t4.add_argument("--delta", type=float, default=0.005, help="GT match distance (m)")
@@ -237,7 +248,7 @@ if __name__ == "__main__":
         rows = table4(
             args.ply, args.cameras_json, args.images_dir, args.mask_dir,
             [float(k) for k in args.kappas.split(",")],
-            ref_kappa=args.ref_kappa, max_iter=args.max_iter,
+            max_iter=args.max_iter,
             gt_xyz=None if args.gt is None else read_ply(args.gt)[0][:, :3],
             delta=args.delta,
         )
@@ -248,8 +259,7 @@ if __name__ == "__main__":
                      if args.gt else "")
             print(f"{'N/' + str(r['kappa']):>10} {r['n_fg']:>9} "
                   f"{r['consistency']:>13.2f} {r['ghost_index']:>12.2f}{extra}")
-        print(f"(reference |FG| at kappa={args.ref_kappa}: {rows[0]['n_fg_ref']}, "
-              f"N_total={rows[0]['n_total']})")
+        print(f"(N_total={rows[0]['n_total']})")
     elif args.mode == "geometry":
         m = geometry_metrics(
             read_ply(args.pred)[0][:, :3], read_ply(args.gt)[0][:, :3],

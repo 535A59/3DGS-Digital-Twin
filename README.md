@@ -401,7 +401,7 @@ python -m src.evaluation.metrics miou --scene_ply point_cloud.ply \
     --images_dir images/ --gt_mask_dir gt_masks_json/
 ```
 
-Metric definitions (including the Ghost Index reference threshold) are in the
+Metric definitions (Ghost Index = % of mask pixels whose front-most point is left in the background) are in the
 [metrics.py](src/evaluation/metrics.py) docstring.
 
 ### `src/sim_export`

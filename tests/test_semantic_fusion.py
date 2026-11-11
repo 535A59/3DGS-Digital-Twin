@@ -11,7 +11,7 @@ import numpy as np
 from sklearn.cluster import DBSCAN
 from sklearn.metrics import adjusted_rand_score
 
-from src.evaluation.metrics import geometry_metrics, projection_consistency
+from src.evaluation.metrics import geometry_metrics, ghost_index, projection_consistency
 from src.semantic_fusion.fusion import dbscan_1d, in_view, lift_labels, project
 
 import cv2
@@ -106,7 +106,19 @@ def test_geometry_metrics_identity():
     assert m["chamfer"] == 0.0 and m["f1"] == 1.0
 
 
+def test_ghost_index_counts_background_residue():
+    # one camera at the origin looking down +z; 2x2 image, all pixels in mask
+    cam = dict(K=np.array([[1.0, 0, 1], [0, 1, 1], [0, 0, 1]]),
+               RT=np.hstack([np.eye(3), np.zeros((3, 1))]), shape=(2, 2))
+    front = np.array([[-.5, -.5, 1], [.5, -.5, 1], [-.5, .5, 1], [.5, .5, 1]])
+    pts = np.vstack([front, front * [1, 1, 2]])          # same pixels, farther away
+    fg = np.r_[True, True, True, False, False, False, False, False]
+    # 1 of 4 mask pixels has a background point in front -> 25%; hidden points don't count
+    assert ghost_index(pts, fg, [cam], [np.ones((2, 2), bool)]) == 25.0
+
+
 if __name__ == "__main__":
+    test_ghost_index_counts_background_residue()
     test_dbscan_1d_matches_sklearn()
     test_geometry_metrics_identity()
     test_fusion_rejects_bleeding_and_floaters()
