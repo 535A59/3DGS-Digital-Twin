@@ -80,9 +80,13 @@ Sparse RGB Images
 ├── tools/
 │   └── unity_gs_to_ply.py        # Unity GaussianSplatting .asset → 3DGS PLY
 ├── simulation/
-│   └── isaac/                    # Isaac Sim scene, runtime, run report
+│   ├── isaac/                    # Isaac Sim scene, runtime, run report
+│   ├── Scenes/GSTestScene.unity  # Unity scene used in the paper
+│   └── Scripts/                  # Unity ↔ ROS 2 bridge scripts (C#)
 ├── ros2_ws/
-│   └── mtc_controller_final/     # mtc_dynamic: MoveIt 2 Task Constructor ROS 2 package
+│   ├── mtc_controller_final/     # mtc_dynamic: MoveIt 2 Task Constructor ROS 2 package
+│   ├── point_cloud/              # Publishes background PLY (Unity → ROS frame) as PointCloud2
+│   └── cloud_to_octomap/         # PointCloud2 → OctoMap for the MoveIt planning scene
 ├── docker/
 │   └── moveit/                   # ROS 2 Jazzy + MoveIt 2 + MTC image
 ├── scripts/
@@ -459,7 +463,40 @@ renderer and [ROS2ForUnity](external/ros2-for-unity/):
 3. Add a `Rigidbody` component.
 4. Bridge Unity ↔ ROS 2 with ROS2ForUnity for sensor simulation and command execution.
 
-The Unity project itself is not part of this branch.
+`simulation/Scenes` and `simulation/Scripts` contain the scene and scripts from the paper's Unity
+(HDRP) project. Copy them into `Assets/` of a project that already has UnityGaussianSplatting,
+ROS2ForUnity and a Franka URDF import; the scene's references to the Gaussian assets and robot
+model must then be re-linked.
+
+| Script | Role |
+|--------|------|
+| `JointStatePublisher.cs` / `ROS_Subscriber.cs` / `InitJoint.cs` | Robot joint state Unity ↔ `/joint_states` |
+| `BackgroundCloudPublisher.cs` | Background point cloud → `/background_cloud` |
+| `MarkerPublisher.cs` | Object / background poses as `Marker`s |
+| `GraphMeshPublisher.cs` | Grasp-object mesh → `/grasp_mesh` |
+| `ObjectPositionSubscriber.cs` | Object pose ← ROS |
+| `DestinationPub.cs` | Placement target → ROS |
+| `GSRigidBodySpawner.cs` | Convex-hull `MeshCollider` + `Rigidbody` from a Gaussian asset |
+| `Transformation.cs` | Applies a 4×4 alignment matrix to a GameObject |
+| `GS2Mesh.cs` | (legacy, commented out) in-Unity Gaussian → mesh conversion |
+
+**Coordinate conventions.** The splat and meshes sit under the `world2` object of
+`GSTestScene.unity` (uniform scale 2.27, plus the rotation and translation that align them to the
+robot; `Transformation.cs` can set this from a 4×4 matrix). Publishers express poses relative to the
+robot-base object (`world`) and map axes `(x, y, z)_unity → (z, -x, y)_ros`. The determinant of
+this map is −1 because it converts Unity's left-handed Y-up frame to ROS's right-handed Z-up frame,
+so apply it to Unity-side coordinates only. The 2.27 scale was fitted by eye; the metric estimate
+is 1.75 m/unit (see `configs/twin_res5.yaml`).
+
+The static background reaches MoveIt as an OctoMap:
+
+```bash
+ros2 run point_cloud public_ply /path/to/background.ply   # → /background_cloud_reliable
+ros2 launch cloud_to_octomap cloud_to_octomap.launch.py   # → octomap (frame: world)
+```
+
+`public_ply` waits for the background pose on `/background_tranform` (a `Marker` published from
+Unity by `MarkerPublisher.cs`) and applies scale → rotation → translation.
 
 ---
 
