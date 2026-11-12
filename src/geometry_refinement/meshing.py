@@ -1,18 +1,22 @@
 """
-Stage 3 — Watertight Meshing via Alpha Shapes.
+Stage 3 — Meshing via Alpha Shapes.
 
-Converts a filtered 3DGS point cloud into a watertight triangle mesh
-suitable for use as a physics collision primitive in Unity / MoveIt 2.
+Converts a filtered 3DGS point cloud into a triangle mesh used as a collision
+proxy (Isaac Sim / MoveIt 2).
 
 Pipeline inside this module
 ---------------------------
 1. Read PLY, decode SH DC coefficients → RGB colours.
 2. Opacity filter + white-background removal.
 3. Statistical outlier removal (Open3D).
-4. Optional: centre point cloud at origin.
-5. Optional: apply coordinate-system transform (3D-model → ROS convention).
+4. Optional: centre point cloud at origin (off by default).
+5. Optional: legacy Unity axis swap — a MIRROR (det -1), see ``transform_coords``.
 6. Alpha Shapes → TriangleMesh.
-7. Save as .obj / .ply / .stl (format inferred from extension).
+7. Save as .obj / .ply / .stl (format inferred from extension), plus a
+   ``<mesh>.json`` sidecar {"center": [...], "transform_coords": bool} so the
+   mesh can be put back into the splat frame:  mesh = T(p_splat - center).
+
+With the defaults the mesh vertices are in the same frame as the input PLY.
 
 Usage
 -----
@@ -25,6 +29,7 @@ Usage
 from __future__ import annotations
 
 import argparse
+import json
 import os
 
 import numpy as np
@@ -45,13 +50,14 @@ def gaussians_to_mesh(
     min_opacity: float = 0.02,
     white_threshold: float = 1.0,
     alpha_value: float = 0.01,
-    center_the_cloud: bool = True,
+    center_the_cloud: bool = False,
     transform_coords: bool = False,
     nb_neighbors: int = 20,
     std_ratio: float = 2.0,
-) -> None:
+) -> np.ndarray:
     """
-    Convert a 3DGS PLY file into a watertight triangle mesh.
+    Convert a 3DGS PLY file into a triangle mesh (alpha shapes are not
+    guaranteed to be watertight — use a convex hull / decomposition for physics).
 
     Parameters
     ----------
@@ -63,11 +69,18 @@ def gaussians_to_mesh(
     alpha_value       Alpha radius for the Alpha Shapes algorithm.
                       Smaller → tighter / more detailed mesh.
                       Larger  → smoother / fewer holes.
-    center_the_cloud  Translate the cloud so its geometric centre = origin.
-    transform_coords  Apply model→ROS coordinate convention:
-                        Z → X,  X → -Y,  Y → Z
+    center_the_cloud  Translate the cloud so its mean = origin.  The subtracted
+                      centre is returned and saved in the sidecar.
+    transform_coords  Legacy Unity axis swap  x'=z, y'=-x, z'=y.  WARNING: this
+                      matrix has det -1, i.e. it MIRRORS the object; only valid
+                      for the old left-handed Unity pipeline.  Never use it for
+                      right-handed consumers (Isaac Sim / USD / ROS).
     nb_neighbors      Statistical outlier removal: number of neighbours.
     std_ratio         Statistical outlier removal: standard deviation ratio.
+
+    Returns
+    -------
+    The centre subtracted from the points (zeros if ``center_the_cloud`` is off).
     """
     if not O3D_AVAILABLE:
         raise ImportError(
@@ -120,20 +133,23 @@ def gaussians_to_mesh(
     print(f"[Mesh] After outlier removal : {len(pcd.points)} pts")
 
     # --- 7. Centre ---
+    centre = np.zeros(3)
     if center_the_cloud:
         centre = pcd.get_center()
         pcd.points = o3d.utility.Vector3dVector(np.asarray(pcd.points) - centre)
         print(f"[Mesh] Centred at {centre}")
 
-    # --- 8. Coordinate transform (model → ROS) ---
+    # --- 8. Legacy axis swap (a mirror, det -1) ---
     if transform_coords:
+        print("[Mesh] WARNING: transform_coords is a MIRROR (det -1) — the mesh no "
+              "longer matches the splats in any right-handed frame.")
         orig = np.asarray(pcd.points)
         transformed = np.zeros_like(orig)
         transformed[:, 0] = orig[:, 2]    # Z → X
         transformed[:, 1] = -orig[:, 0]   # X → -Y
         transformed[:, 2] = orig[:, 1]    # Y → Z
         pcd.points = o3d.utility.Vector3dVector(transformed)
-        print("[Mesh] Coordinate transform applied (model → ROS).")
+        print("[Mesh] Legacy axis swap applied (x'=z, y'=-x, z'=y).")
 
     # --- 9. Alpha Shapes → mesh ---
     print(f"[Mesh] Computing Alpha Shape (alpha={alpha_value}) ...")
@@ -156,22 +172,26 @@ def gaussians_to_mesh(
     # --- 10. Save ---
     os.makedirs(os.path.dirname(os.path.abspath(output_mesh_path)), exist_ok=True)
     o3d.io.write_triangle_mesh(output_mesh_path, mesh, write_vertex_colors=True)
+    with open(os.path.splitext(output_mesh_path)[0] + ".json", "w") as f:
+        json.dump({"center": centre.tolist(), "transform_coords": transform_coords}, f)
     print(f"[Mesh] Saved → {output_mesh_path}")
+    return centre
 
 
 def _parse_args():
     p = argparse.ArgumentParser(
-        description="Convert a 3DGS PLY to a watertight mesh via Alpha Shapes."
+        description="Convert a 3DGS PLY to a triangle mesh via Alpha Shapes."
     )
     p.add_argument("--input", required=True, help="Input 3DGS PLY")
     p.add_argument("--output", required=True, help="Output mesh file (.obj/.ply/.stl)")
     p.add_argument("--alpha", type=float, default=0.01, help="Alpha radius")
     p.add_argument("--min_opacity", type=float, default=0.02)
     p.add_argument("--white_threshold", type=float, default=1.0)
-    p.add_argument("--no_center", action="store_true", help="Disable centring")
+    p.add_argument("--center", action="store_true",
+                   help="Centre the cloud at the origin (centre saved in <mesh>.json)")
     p.add_argument(
         "--transform_coords", action="store_true",
-        help="Apply model→ROS coordinate transform"
+        help="Legacy Unity axis swap — a MIRROR (det -1); never for Isaac/ROS"
     )
     p.add_argument("--nb_neighbors", type=int, default=20)
     p.add_argument("--std_ratio", type=float, default=2.0)
@@ -186,7 +206,7 @@ if __name__ == "__main__":
         min_opacity=args.min_opacity,
         white_threshold=args.white_threshold,
         alpha_value=args.alpha,
-        center_the_cloud=not args.no_center,
+        center_the_cloud=args.center,
         transform_coords=args.transform_coords,
         nb_neighbors=args.nb_neighbors,
         std_ratio=args.std_ratio,

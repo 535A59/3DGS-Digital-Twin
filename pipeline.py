@@ -5,7 +5,7 @@ Orchestrates the full reconstruction-to-collision workflow:
 
     Step 0 (external)  InstantSplat 3DGS reconstruction
     Step 1             Semantic segmentation  (SAM interactive masks → JSON)
-    Step 2             Semantic fusion        (multi-view voting + KNN lifting)
+    Step 2             Semantic fusion        (visibility + depth-gated consensus)
     Step 3a            Geometry filter        (opacity + scale pruning)
     Step 3b            DBSCAN clean           (connectivity pruning)
     Step 3c            Watertight meshing     (Alpha Shapes → .obj)
@@ -84,7 +84,12 @@ def step2_fuse(cfg: dict) -> str:
         mask_dir=cfg["mask_dir"],
         out_dir=out_dir,
         object_name=cfg.get("object_name", "object"),
-        vote_fraction=seg_cfg.get("vote_fraction", 0.5),
+        kappa=seg_cfg.get("kappa", 1.5),
+        eps_depth=seg_cfg.get("eps_depth", 0.02),
+        min_samples=seg_cfg.get("min_samples", 10),
+        visibility_tol=seg_cfg.get("visibility_tol", 0.02),
+        zbuf_cell=seg_cfg.get("zbuf_cell", 4),
+        occluder_min_alpha=seg_cfg.get("occluder_min_alpha", 0.1),
         max_iter=seg_cfg.get("max_iter", 3),
         knn_k=seg_cfg.get("knn_k", 15),
         knn_threshold=seg_cfg.get("knn_threshold", 0.6),
@@ -144,7 +149,7 @@ def step3_refine(cfg: dict, ply_path: str) -> str:
         min_opacity=mesh_cfg.get("min_opacity", 0.02),
         white_threshold=mesh_cfg.get("white_threshold", 1.0),
         alpha_value=mesh_cfg.get("alpha_value", 0.01),
-        center_the_cloud=mesh_cfg.get("center_the_cloud", True),
+        center_the_cloud=mesh_cfg.get("center_the_cloud", False),
         transform_coords=mesh_cfg.get("transform_coords", False),
         nb_neighbors=mesh_cfg.get("nb_neighbors", 20),
         std_ratio=mesh_cfg.get("std_ratio", 2.0),
@@ -245,10 +250,11 @@ def main():
     )
     if 2 in steps:
         segmented_ply = step2_fuse(cfg)
-    elif not os.path.exists(segmented_ply):
-        # Fall back to the raw PLY if no segmented file is found
-        segmented_ply = cfg["ply"]
-        print(f"[INFO] Skipping fusion — using {segmented_ply} directly.")
+    elif 3 in steps and not os.path.exists(segmented_ply):
+        # Meshing the raw scene would mesh its largest cluster (usually the table).
+        raise FileNotFoundError(
+            f"No segmented object PLY at {segmented_ply} — run step 2 (fusion) first."
+        )
 
     # Step 3 — geometry refinement
     if 3 in steps:

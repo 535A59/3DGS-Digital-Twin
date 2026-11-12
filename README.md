@@ -26,8 +26,8 @@ Sparse RGB Images
        │  masks_json/
        ▼
 ┌─────────────────────┐
-│  Step 2 · Semantic  │  ← Multi-view voting + KNN
-│  Fusion             │     boundary refinement
+│  Step 2 · Semantic  │  ← Z-buffer visibility + depth-
+│  Fusion             │     gated consensus + KNN (×3)
 └─────────────────────┘
        │  object.ply
        ▼
@@ -58,16 +58,22 @@ Sparse RGB Images
 │   ├── semantic_segmentation/
 │   │   └── sam_segmentation.py   # Interactive SAM segmentation → JSON masks
 │   ├── semantic_fusion/
-│   │   └── fusion.py             # Multi-view voting + KNN 3D lifting
-│   └── geometry_refinement/
-│       ├── filter.py             # Opacity + scale attribute filtering
-│       ├── dbscan_clean.py       # DBSCAN connectivity pruning / splitting
-│       └── meshing.py            # Alpha Shapes watertight meshing
+│   │   └── fusion.py             # Visibility-aware, depth-gated 3D lifting (Sec. 3.2)
+│   ├── geometry_refinement/
+│   │   ├── filter.py             # Opacity + scale attribute filtering
+│   │   ├── dbscan_clean.py       # DBSCAN connectivity pruning / splitting
+│   │   └── meshing.py            # Alpha Shapes watertight meshing
+│   └── evaluation/
+│       └── metrics.py            # Table 4 consistency / ghost index, Table 5 geometry, mIoU
+├── tests/
+│   └── test_semantic_fusion.py   # Synthetic-scene self-checks
 ├── ros2_ws/
-│   └── mtc_controller_final/     # MoveIt 2 Task Constructor ROS 2 package
+│   ├── mtc_controller_final/     # MoveIt 2 Task Constructor ROS 2 package
+│   ├── point_cloud/              # Publishes background PLY (Unity → ROS frame) as PointCloud2
+│   └── cloud_to_octomap/         # PointCloud2 → OctoMap for the MoveIt planning scene
 ├── simulation/
 │   ├── Scripts/                  # Unity C# scripts (see below)
-│   └── Scenes/                   # Unity scene files
+│   └── Scenes/GSTestScene.unity  # Unity scene used in the paper
 ├── external/
 │   ├── InstantSplat/             # 3DGS reconstruction (submodule)
 │   ├── UnityGaussianSplatting/   # Unity 3DGS renderer (submodule)
@@ -83,7 +89,7 @@ Sparse RGB Images
 ### 1. Clone (with submodules)
 
 ```bash
-git clone --recurse-submodules https://github.com/your-username/3DGS-Digital-Twin.git
+git clone --recurse-submodules https://github.com/535A59/3DGS-Digital-Twin.git
 cd 3DGS-Digital-Twin
 ```
 
@@ -167,7 +173,21 @@ python -m src.semantic_segmentation.sam_segmentation \
 
 ### `src/semantic_fusion`
 
-Lifts 2D masks into 3D via multi-view voting and iterative KNN refinement.
+Lifts 2D masks into 3D (paper Sec. 3.2, Eqs. 2–3). For up to `max_iter` feedback iterations:
+
+1. **Visibility** — per view, a z-buffer of opaque Gaussians (`occluder_min_alpha`) on
+   `zbuf_cell`-pixel cells; a Gaussian is visible if within `visibility_tol` of the front surface → `V'_i`.
+2. **Depth clustering** — per view, 1-D DBSCAN (`eps_depth`, `min_samples`) on the depths of the
+   visible in-mask Gaussians. Primary cluster → `w_cluster = 1`; detached points decay as
+   `exp(-½ (gap / eps_depth)²)` → `W_ij`.
+3. **Consensus** — object iff `Σ_j W_ij · 1[(u,v) ∈ M_j] ≥ |V'_i| / κ` (κ = 1.5).
+4. **KNN boundary refinement.**
+5. **Feedback** — in-mask Gaussians rejected by the depth gate are dropped from the next
+   iteration's z-buffer, and the primary depth cluster is chosen by overlap with the current 3D labels.
+
+Surfaces never seen in any view (e.g. an object's underside resting on the table) receive no
+observations and are not completed explicitly; the Alpha Shapes mesh closes them with the hull
+of the observed points.
 
 ```bash
 python -m src.semantic_fusion.fusion \
@@ -217,6 +237,32 @@ python -m src.geometry_refinement.meshing \
     --alpha  0.01
 ```
 
+### `src/evaluation`
+
+```bash
+# Table 4: consistency / ghost index sweep (every κ reruns the full feedback + KNN pipeline)
+python -m src.evaluation.metrics table4 \
+    --ply point_cloud.ply --cameras_json cameras.json \
+    --images_dir images/ --mask_dir masks_json/ --kappas 2.0,1.8,1.5,1.2,1.0
+
+# Table 5: Chamfer / precision / recall / F1 vs. a manually cleaned GT cloud
+python -m src.evaluation.metrics geometry --pred refined/hammer_clean.ply --gt gt/hammer.ply
+
+# 2D mIoU of the projected 3D segmentation vs. annotated GT masks (same JSON format)
+python -m src.evaluation.metrics miou --scene_ply point_cloud.ply \
+    --object_ply segmented/hammer.ply --cameras_json cameras.json \
+    --images_dir images/ --gt_mask_dir gt_masks_json/
+```
+
+Metric definitions (Ghost Index = % of mask pixels whose front-most point is left in the background) are in the
+[metrics.py](src/evaluation/metrics.py) docstring.
+
+### Tests
+
+```bash
+python -m tests.test_semantic_fusion
+```
+
 ---
 
 ## ROS 2 / MoveIt 2 Integration
@@ -237,6 +283,16 @@ ros2 launch mtc_dynamic run.launch.py
 
 The generated `.obj` mesh can be loaded as a `CollisionObject` in MoveIt 2's planning scene. See `ros2_ws/mtc_controller_final/src/scripts/` for utility scripts.
 
+The static background reaches MoveIt as an OctoMap:
+
+```bash
+ros2 run point_cloud public_ply /path/to/background.ply   # → /background_cloud_reliable
+ros2 launch cloud_to_octomap cloud_to_octomap.launch.py   # → octomap (frame: world)
+```
+
+`public_ply` waits for the background pose on `/background_tranform` (a `Marker`
+published from Unity by `MarkerPublisher.cs`) and applies scale → rotation → translation.
+
 ---
 
 ## Unity Simulation
@@ -248,13 +304,38 @@ The collision mesh is imported into Unity alongside the [UnityGaussianSplatting]
 3. Add a `Rigidbody` component.
 4. Use the [ROS2ForUnity](external/ros2-for-unity/) plugin to bridge Unity ↔ ROS 2 for sensor simulation and command execution.
 
+`simulation/` contains the scripts and scene from the paper's Unity (HDRP) project. Copy them into
+`Assets/` of a project that already has UnityGaussianSplatting, ROS2ForUnity and a Franka URDF
+import; the scene's references to the Gaussian assets and robot model must then be re-linked.
+
+| Script | Role |
+|--------|------|
+| `JointStatePublisher.cs` / `ROS_Subscriber.cs` / `InitJoint.cs` | Robot joint state Unity ↔ `/joint_states` |
+| `BackgroundCloudPublisher.cs` | Background point cloud → `/background_cloud` |
+| `MarkerPublisher.cs` | Object / background poses as `Marker`s |
+| `GraphMeshPublisher.cs` | Grasp-object mesh → `/grasp_mesh` |
+| `ObjectPositionSubscriber.cs` | Object pose ← ROS |
+| `DestinationPub.cs` | Placement target → ROS |
+| `GSRigidBodySpawner.cs` | Convex-hull `MeshCollider` + `Rigidbody` from a Gaussian asset |
+| `Transformation.cs` | Applies a 4×4 alignment matrix to a GameObject |
+| `GS2Mesh.cs` | (legacy, commented out) in-Unity Gaussian → mesh conversion |
+
+**Coordinate conventions.** 3DGS/Unity points are Y-up; ROS is Z-up. Both
+`meshing.py --transform_coords` and `public_ply.py` map `(x, y, z)_unity → (z, -x, y)_ros`
+after centring the cloud (`public_ply` centres on the AABB centre, `meshing.py` on the centroid).
+Units are metres; InstantSplat/MASt3R reconstructions are only approximately metric, so the
+Unity ↔ robot alignment (scale included) is set with `Transformation.cs`.
+
 ---
 
 ## Parameter Tuning Guide
 
 | Parameter | Default | Effect |
 |-----------|---------|--------|
-| `vote_fraction` | 0.5 | Lower → more permissive object mask |
+| `kappa` | 1.5 | Higher → more permissive object mask (τ = visible views / κ) |
+| `eps_depth` | 0.02 | Depth gap (m) separating object from bleeding background |
+| `min_samples` | 10 | Minimum depth-cluster size |
+| `visibility_tol` | 0.02 | Depth slack (m) for the z-buffer test |
 | `knn_k` | 15 | Higher → smoother boundary |
 | `knn_threshold` | 0.6 | Lower → more boundary updates |
 | `filter.min_alpha` | 0.05 | Lower → keep more transparent Gaussians |
@@ -269,7 +350,7 @@ The collision mesh is imported into Unity alongside the [UnityGaussianSplatting]
 | Metric | This system | NeRF baseline |
 |--------|------------|---------------|
 | Reconstruction time | ~229 s | ~1123 s |
-| PSNR | 37.03 dB | 29.14 dB |
+| PSNR | 37.03 dB | 28.33 dB |
 | SSIM | 0.9821 | 0.9037 |
 | Pick-and-place success | **90%** (9/10) | — |
 

@@ -25,8 +25,13 @@ device:          ~                            # null = auto-detect (cuda if avai
 # Step 2 — Semantic Fusion (visibility-aware 3D lifting)
 # ----------------------------------------------------------
 semantic_fusion:
-  vote_fraction:   0.5    # Fraction of cameras required for object label
-  max_iter:        3      # KNN refinement iterations
+  kappa:              1.5   # Object iff weighted votes >= visible views / kappa
+  eps_depth:          0.02  # Per-view depth DBSCAN eps (m)
+  min_samples:        10    # Per-view depth DBSCAN min_samples
+  visibility_tol:     0.02  # Z-buffer depth slack (m)
+  zbuf_cell:          4     # Z-buffer cell size (px)
+  occluder_min_alpha: 0.1   # Gaussians below this opacity never occlude
+  max_iter:           3     # Depth-feedback iterations (each ends with KNN refinement)
   knn_k:           15     # KNN neighbourhood size
   knn_threshold:   0.6    # Consistency threshold to update a label
   save_background: false  # Set true to also export background.ply
@@ -52,8 +57,8 @@ geometry_refinement:
     alpha_value:      0.01    # Alpha radius (smaller = tighter mesh)
     min_opacity:      0.02    # Secondary opacity filter before meshing
     white_threshold:  1.0     # Remove white (background) Gaussians
-    center_the_cloud: true    # Translate mesh centre to origin
-    transform_coords: false   # Apply model→ROS coordinate transform
+    center_the_cloud: false   # true: translate mesh mean to origin (saved in <mesh>.json)
+    transform_coords: false   # legacy Unity axis swap — a MIRROR (det -1), never for Isaac/ROS
     nb_neighbors:     20      # Outlier removal: neighbour count
     std_ratio:        2.0     # Outlier removal: std deviation ratio
     format:           obj     # Output format: obj | ply | stl
